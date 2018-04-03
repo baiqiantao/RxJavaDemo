@@ -26,12 +26,15 @@ public class NetActivity extends Activity {
 	public static final int MESSAGE_WHAT_REFUSH_AVE_SPEED = 2;//刷新平均网速
 	public static final int MESSAGE_WHAT_REFUSH_START_ANIMATION = 3;//开始开启动画
 	public static final int MESSAGE_WHAT_REFUSH_RESET = 4;//重置
+	
 	private static final String URL_DOWNLOAD = "http://f2.market.xiaomi.com/download/AppStore/08caf4c947ec5ded753141a9ca98e9691ad43e32d/com.tencent.wework.apk";
+	
 	private static final int LENGTH_REFUSH_CURRENT_SPEED = 1024 * 100;//下载多少byte内容后刷新一次实时网速
 	private static final int DURATION_AVE_SPEED = 300;//过多久时间后刷新一次平均网速
 	private static final int DURATION_ANIMATION = 100;//动画转动时长
 	private static final int DURATION_ANIMATION_INTERVAL = DURATION_ANIMATION + 50;//过多久时间后刷新一次动画
 	private static final int DURATION_MAXCHECK = 5 * 1000;//整个测速过程允许的最大时间
+	
 	private TextView tv_type, tv_now_speed, tv_ave_speed;
 	private Button btn;
 	private ImageView needle;
