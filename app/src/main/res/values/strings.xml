@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">Test</string>
+    <string name="btn1">========================   1     ===========================</string>
+    <string name="btn_demo_schedulers">调度程序和并发\n bg work (schedulers &amp; concurrency)</string>
+    <string name="btn_demo_buffer">请求累计（缓冲区）\n accumulate calls (buffer)</string>
+    <string name="btn_demo_debounce">搜索文本监听器（去抖动）\n search text listener(debounce)</string>
+    <string name="btn_demo_retrofit">Retrofit + RxJava</string>
+    <string name="btn_demo_double_binding_textview">双重绑定\n Double binding (PublishSubject)</string>
+    <string name="btn_demo_polling">用RxJava轮询\n Polling with RxJava</string>
+    <string name="btn_demo_rxbus">\n Event Bus with RxJava</string>
+
+    <string name="btn2">========================   2     ===========================</string>
+    <string name="btn_demo_form_validation_combinel">\n Form Validation with CombineLatest</string>
+    <string name="btn_demo_pseudocache">\n Pseudo cache using concat</string>
+    <string name="btn_demo_timing">\n Variations of timing/intervals/delays</string>
+
+    <string name="btn_demo_timeout">超时长时间运行的作业\n Timeout long running jobs</string>
+    <string name="btn_demo_exponential_backoff">\n Exponential backoff</string>
+    <string name="btn_demo_rotation_persist">\n Rotation persist</string>
+    <string name="btn_demo_volley">\n Volley request demo</string>
+    <string name="btn_demo_pagination">\n Paging example</string>
+    <string name="btn_demo_pagination_more">\n MOAR</string>
+    <string name="btn_demo_networkDetector">\n Network Detector (Subject)</string>
+    <string name="btn_demo_using">\n Setup &amp; teardown resources (using)</string>
+    <string name="btn_demo_multicastPlayground">\n MultiConnect operator playground</string>
+
+    <string name="msg1">========================   1     ===========================</string>
+    <string name="msg_demo_concurrency_schedulers">This is a demo of how long running operations can be offloaded to a background thread. After the operation is done, we resume back on the main thread. All using RxJava! \n\n To really see this shine. Hit the button multiple times and see how the button click which is a ui operation is never blocked because the long operation only runs in the background \n\n
+        这是一个耗时操作如何卸载到后台线程的演示。 操作完成后，我们重新恢复到主线程。 全部使用RxJava！ 要想真正看到这个演示的闪光点。 请多次点击按钮，可以看到作为一个UI操作的按钮点击操作是永远不会被阻止的，因为耗时操作只放在后台运行</string>
+    <string name="msg_demo_buffer">This is a demo of how events can be accumulated using the "buffer" operation. Tap the button below repetitively and you will notice in the logs that button taps are collected over a span of 2s and printed below. \n\n
+    这是演示如何使用“缓冲区”操作来累积事件。 重复点击下面的按钮，您会注意到日志中按钮点击收集的时间跨度为2s，并打印在下方</string>
+    <string name="msg_demo_debounce">As you type in the input box, it will not shoot out log messages at every single input character change, but rather only pick the last one. \n\n
+    当你在输入框中输入内容时，它不会在每次输入字符更改时发出日志消息，而只会选择最后一个。用简单的话讲就是当N个结点发生的时间太靠近（即发生的时间差小于设定的值T），debounce就会自动过滤掉前N-1个结点。</string>
+    <string name="msg_demo_retrofit">Retrofit from Square is a super easy networking helper library. It works really well with RxJava and these are examples taken from Jake Wharton\'s talk at Netflix (see README). Really the only interesting bits here are in the code and logs. \n\n
+     它适用于RxJava，这些都是 Jake Wharton 在Netflix的演讲中提供的例子（请参阅自述文件）。 真正唯一有趣的地方在于代码和日志。</string>
+    <string name="msg_demo_doublebinding">Watch how the result gloriously auto-updates sed on your changing inputs. Using a technique like this, you could achieve the two-way binding in Angular Js, or more efficiently use a pattern like the Presentation View Model. \n\n
+    观看结果如何自动更新sed，在您更改输入时。 使用这样的技术，您可以在Angular Js中实现双向绑定，或者更高效地使用像Presentation View Model这样的模式。</string>
+    <string name="msg_demo_polling">Demo polling or making a call repeatedly with RxJava.\n\nSimple polling: Notice in the logs how a (simulated) network call is repeatedly made in the background. \n\n
+    使用RxJava反复轮询或发起请求。简单轮询：在日志中注意观察一个（模拟的）网络请求是如何在后台重复made的</string>
+    <string name="msg_demo_rxbus_1">Tap on the below button and RxBus will listen to the events \n\n
+    点击下面的按钮，RxBus将听取事件。 注意：RxBus并不是一个库，而是一种模式，是使用了RxJava的思想来达到EventBus的数据传递效果。</string>
+
+    <string name="msg2">========================   2     ===========================</string>
+    <string name="msg_demo_exponential_backoff">These two examples demonstrate retrying and executing with a delay using an exponential backoff strategy. \n\n
+    </string>
+
+    <string name="msg_demo_form_comb_latest">Monitor the state of multiple observables with the combineLatest operator. Only after all the 3 inputs contain valid entries will the submit button light up \n\n
+    使用combineLatest操作符监视多个可观察对象的状态。 只有在所有3个输入都包含有效条目后，提交按钮才会亮起。使用combineLatest合并最近N个结点，例如：注册的时候所有输入信息（邮箱、密码、电话号码等）合法才点亮注册按钮。</string>
+    <string name="msg_demo_timing">BTN 1: run single task once (after 2s complete)\nBTN 2: run task every 1s (start delay of 1s) toggle \nBTN 3: run task every 1s (start immediately) toggle \nBTN 4: run task 5 times every 3s (then complete) \nBTN 5: run task A, pause for sometime, then proceed with Task B \n\n
+    </string>
+    <string name="msg_demo_rotation_persist">This is an example of starting an Observable and using the result across rotations. There are many ways to do this, we use ViewModels from architecture components \n\n
+    </string>
+    <string name="msg_demo_network_detector">This is a demo of how to use Subjects to detect Network connectivity\nToggle your Wifi/Network on or off and notice the logs \n\n
+    </string>
+    <string name="msg_demo_using">This is a demo of the somewhat unknown operator "using".\n\nYou typically use it for managing setup/teardown of resources. Classic cases are DB connections (like Realm), sockets, locks etc.\n\nTap the button and look at the logcat. Particularly notice how the Realm instance is self-contained. That is, it is auto-disposed right after use. \n\n
+    </string>
+    <string name="msg_demo_multicast_publishRefCount">RefCount starts the upstream right away and gets disposed off, when all subscribers stop. Hit S1, Hit S2, Hit S1, Hit S2. Hit S1/S2 now and notice the stream starts all over. \n\n
+    </string>
+    <string name="msg_demo_multicast_publishAutoConnect">AutoConnect(2) waits for a min. subscriber count, before starting the upstream. Hit S1 (notice events don\'t start), Hit S2 (notice events now start), Hit S1 (notice that unsubscribing doesn\'t affect upstream), Hit S2, wait for sometime and hit S1 again (notice source stream doesn\'t restart) \n\n
+    </string>
+    <string name="msg_demo_multicast_replayAutoConnect">Replay caches the last item. Hit S1, Hit S2, event starts, Hit S2, wait a bit, Hit S2 again (notice it starts with the last item that S1 saw - courtesy Replay). Hit S2, Hit S1, wait a bit. Hit S1 again (notice event upstream continues and doesn\'t restart) \n\n
+    </string>
+    <string name="msg_demo_multicast_replayRefCount">Replay caches the last item. Hit S1, wait a bit, then hit S2 (notice S2 starts immediately with last item that S1 saw), Hit S2, Hit S1. Hit S1/S2 again (notice the stream restarts all over. Interestingly cached last item also removed when both subscribers released) \n\n
+    </string>
+    <string name="msg_demo_multicast_replayingShare">Courtesy: new #AndroidDev on the block - JakeWharton. exactly like replay(1).refCount(), but caches the last item even when upstream has been disposed off/released. Hit S1, Hit S2, Hit S1, Hit S2 (notice observable is disposed). Hit S1/S2 again (notice we start with last item emitted) \n\n
+    </string>
+    <string name="msg_demo_timeout">This is a demo of terminating events, that take too long to process. Events in this demo should timeout in 3 seconds. Button 1 is an event that takes 2s to process, and Button 2 is a n event that takes 5s to process. Hit Button 2, and see in the logs that it\'s been cancelled, while this is not the case for Button 1. \n\n
+    这是终止事件的演示，此事件需要很长时间才能处理。 此演示中的事件应在3秒内超时。 按钮1是需要2秒处理的事件，按钮2是需要5秒处理的n事件。 点击按钮2，并在日志中看到它已被取消，而按钮1则不是这种情况。</string>
+    <string name="msg_demo_retrofit_async_task_death">This shows how you can replace an AsyncTask with RxJava. The interesting parts are in the code. \n\n
+    </string>
+
+</resources>
