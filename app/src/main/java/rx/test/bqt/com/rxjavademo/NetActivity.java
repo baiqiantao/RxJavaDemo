@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.TrafficStats;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -77,8 +78,6 @@ public class NetActivity extends Activity {
 		new DownloadThread().start();
 	}
 	
-	//region  子线程
-	
 	private void startAnimation(int cur_speed) {
 		int curDegree = getDegree(cur_speed);
 		Log.i("bqt", "当前角度" + curDegree + "   上次角度" + lastDegree);
@@ -92,10 +91,6 @@ public class NetActivity extends Activity {
 		lastDegree = curDegree;
 		needle.startAnimation(rotateAnimation);
 	}
-	
-	//endregion
-	
-	//region  Handler
 	
 	private int getDegree(int speed) {
 		speed /= 1000;
@@ -112,20 +107,7 @@ public class NetActivity extends Activity {
 		return ret;
 	}
 	
-	/**
-	 * 格式化文件大小
-	 *
-	 * @param size 文件大小
-	 */
-	private String formatData(long size) {
-		DecimalFormat formater = new DecimalFormat("####.00");
-		return formater.format(size * Math.pow(1024, -1)) + "KB";
-		/*if (size < 1024) return size + "B";
-		else if (size < Math.pow(1024, 2)) return formater.format(size * Math.pow(1024, -1)) + "KB";
-		else if (size < Math.pow(1024, 3)) return formater.format(size * Math.pow(1024, -2)) + "MB";
-		else if (size < Math.pow(1024, 4)) return formater.format(size * Math.pow(1024, -3)) + "GB";
-		else return "";*/
-	}
+	private long lastTotalRxBytes = 0;
 	
 	/**
 	 * 复原到初始状态
@@ -151,6 +133,43 @@ public class NetActivity extends Activity {
 		}
 	}
 	
+	//region  Handler
+	private long lastTimeStamp = 0;
+	//endregion
+	
+	//region  子线程
+	
+	/**
+	 * 格式化文件大小
+	 *
+	 * @param size 文件大小
+	 */
+	private String formatData(long size) {
+		DecimalFormat formater = new DecimalFormat("####.00");
+		if (size < 1024) return size + "B";
+		else if (size < Math.pow(1024, 2)) return formater.format(size * Math.pow(1024, -1)) + "KB";
+		else if (size < Math.pow(1024, 3)) return formater.format(size * Math.pow(1024, -2)) + "MB";
+		else if (size < Math.pow(1024, 4)) return formater.format(size * Math.pow(1024, -3)) + "GB";
+		else return "";
+	}
+	
+	//endregion
+	
+	//region  其他方法
+	
+	private void showNetSpeed() {
+		int uid = getApplicationInfo().uid;
+		long nowTimeStamp = System.currentTimeMillis();
+		if (TrafficStats.getUidRxBytes(uid) != TrafficStats.UNSUPPORTED && nowTimeStamp - lastTimeStamp > 0) {
+			int speed = (int) ((TrafficStats.getTotalRxBytes() - lastTotalRxBytes) * 1000 / (nowTimeStamp - lastTimeStamp));//毫秒转换
+			lastTimeStamp = nowTimeStamp;
+			lastTotalRxBytes = TrafficStats.getTotalRxBytes();
+			
+			tv_now_speed.setText(formatData(speed) + "/S");
+			Log.i("bqt", "从系统获取的当前的网速为" + formatData(speed) + "/S" + "   " + speed);
+		}
+	}
+
 	static class StaticUiHandler extends Handler {
 		private SoftReference<NetActivity> mSoftReference;
 		
@@ -165,7 +184,8 @@ public class NetActivity extends Activity {
 			if (activity != null && msg != null) {
 				switch (msg.what) {
 					case MESSAGE_WHAT_REFUSH_NOW_SPEED:
-						activity.tv_now_speed.setText(activity.formatData((int) msg.obj) + "/S");
+						//activity.tv_now_speed.setText(activity.formatData((int) msg.obj) + "/S");
+						activity.showNetSpeed();
 						break;
 					case MESSAGE_WHAT_REFUSH_AVE_SPEED:
 						activity.tv_ave_speed.setText(activity.formatData((int) msg.obj) + "/S");
@@ -208,14 +228,14 @@ public class NetActivity extends Activity {
 					arrayUsedTime = System.currentTimeMillis() - endReadArrayTime;
 					if (arrayUsedTime > 0) {//防止分母为零时报ArithmeticException
 						currentSpeed = (int) (temLen / arrayUsedTime * 1000);//当前网速
-						Log.i("bqt", "当前网速" + formatData(currentSpeed) + "/S");
+						Log.i("bqt", "自己计算的当前的网速为" + formatData(currentSpeed) + "/S");
 						
 						//刷新实时网速
 						handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_NOW_SPEED, currentSpeed));
 						
+						//开启动画
 						if (System.currentTimeMillis() - lastAnimationTime > DURATION_ANIMATION_INTERVAL) {
 							lastAnimationTime = System.currentTimeMillis();
-							//开启动画
 							handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_START_ANIMATION, currentSpeed));
 						}
 					}
@@ -228,7 +248,7 @@ public class NetActivity extends Activity {
 							aveSpeed = (int) (downloadLen / allUsedTime * 1000);//平均网速
 							tempUsedTime = System.currentTimeMillis();
 							handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_AVE_SPEED, aveSpeed));
-							Log.i("bqt", "平均网速" + formatData(aveSpeed) + "/S   已下载的长度" + formatData(downloadLen));
+							Log.i("bqt", "平均网速为 " + formatData(aveSpeed) + "/S   已下载的长度" + formatData(downloadLen));
 						}
 					}
 					
