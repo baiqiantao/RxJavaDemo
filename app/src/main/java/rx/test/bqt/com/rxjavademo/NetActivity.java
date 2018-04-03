@@ -134,42 +134,7 @@ public class NetActivity extends Activity {
 	}
 	
 	//region  Handler
-	private long lastTimeStamp = 0;
-	//endregion
 	
-	//region  子线程
-	
-	/**
-	 * 格式化文件大小
-	 *
-	 * @param size 文件大小
-	 */
-	private String formatData(long size) {
-		DecimalFormat formater = new DecimalFormat("####.00");
-		if (size < 1024) return size + "B";
-		else if (size < Math.pow(1024, 2)) return formater.format(size * Math.pow(1024, -1)) + "KB";
-		else if (size < Math.pow(1024, 3)) return formater.format(size * Math.pow(1024, -2)) + "MB";
-		else if (size < Math.pow(1024, 4)) return formater.format(size * Math.pow(1024, -3)) + "GB";
-		else return "";
-	}
-	
-	//endregion
-	
-	//region  其他方法
-	
-	private void showNetSpeed() {
-		int uid = getApplicationInfo().uid;
-		long nowTimeStamp = System.currentTimeMillis();
-		if (TrafficStats.getUidRxBytes(uid) != TrafficStats.UNSUPPORTED && nowTimeStamp - lastTimeStamp > 0) {
-			int speed = (int) ((TrafficStats.getTotalRxBytes() - lastTotalRxBytes) * 1000 / (nowTimeStamp - lastTimeStamp));//毫秒转换
-			lastTimeStamp = nowTimeStamp;
-			lastTotalRxBytes = TrafficStats.getTotalRxBytes();
-			
-			tv_now_speed.setText(formatData(speed) + "/S");
-			Log.i("bqt", "从系统获取的当前的网速为" + formatData(speed) + "/S" + "   " + speed);
-		}
-	}
-
 	static class StaticUiHandler extends Handler {
 		private SoftReference<NetActivity> mSoftReference;
 		
@@ -200,6 +165,9 @@ public class NetActivity extends Activity {
 			}
 		}
 	}
+	//endregion
+	
+	//region  子线程
 	
 	/**
 	 * 下载资源，下载过程中，根据已下载长度、总长度、时间计算实时网速
@@ -263,6 +231,41 @@ public class NetActivity extends Activity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	//endregion
+	
+	//region  其他方法
+	private long lastTimeStamp = 0;
+
+	/**
+	 * 格式化文件大小
+	 *
+	 * @param size 文件大小
+	 */
+	private String formatData(long size) {
+		DecimalFormat formater = new DecimalFormat("####.00");
+		if (size < 1024) return size + "B";
+		else if (size < Math.pow(1024, 2)) return formater.format(size * Math.pow(1024, -1)) + "KB";
+		else if (size < Math.pow(1024, 3)) return formater.format(size * Math.pow(1024, -2)) + "MB";
+		else if (size < Math.pow(1024, 4)) return formater.format(size * Math.pow(1024, -3)) + "GB";
+		else return "";
+	}
+	
+	private void showNetSpeed() {
+		int uid = getApplicationInfo().uid;
+		long nowTimeStamp = System.currentTimeMillis();
+		long totalRxBytes = TrafficStats.getTotalRxBytes();
+		if (TrafficStats.getUidRxBytes(uid) != TrafficStats.UNSUPPORTED
+				&& totalRxBytes > lastTotalRxBytes
+				&& nowTimeStamp - lastTimeStamp > 0) {
+			int speed = (int) ((totalRxBytes - lastTotalRxBytes) * 1000 / (nowTimeStamp - lastTimeStamp));//毫秒转换
+			lastTimeStamp = nowTimeStamp;
+			lastTotalRxBytes = TrafficStats.getTotalRxBytes();
+			
+			tv_now_speed.setText(formatData(speed) + "/S");
+			Log.i("bqt", "从系统获取的当前的网速为" + formatData(speed) + "/S" + "   " + speed);
 		}
 	}
 	
