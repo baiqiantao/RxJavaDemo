@@ -26,7 +26,7 @@ public class MainActivity extends ListActivity {
 				"2",
 				"3",
 				getString(R.string.btn_demo_rxbus),
-				"",
+				"网络监测",
 				"",};
 		tv = new TextView(this);
 		tv.setTextColor(Color.BLUE);
@@ -51,7 +51,7 @@ public class MainActivity extends ListActivity {
 				startActivity(new Intent(this, RxBusActivity.class));
 				break;
 			case 4:
-				
+				startActivity(new Intent(this, NetActivity.class));
 				break;
 			case 5:
 				

@@ -24,6 +24,7 @@
         <activity android:name=".rx.MainActivity1"/>
         <activity android:name=".rx.MainActivity2"/>
         <activity android:name=".rx.MainActivity3"/>
+        <activity android:name=".NetActivity"/>
     </application>
 
 </manifest>
