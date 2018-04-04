@@ -10,14 +10,18 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 
 import java.util.Locale;
 
 //https://github.com/woxingxiao/DashboardView/tree/master/app/src/main/java/com/xw/sample/dashboardviewdemo
 public class DashboardView extends View {
 	
+	private static final long ANIMATION_DURATION = 250; //动画时长
 	private static final int M_START_ANGLE = 135; // 起始角度
 	private static final int M_SWEEP_ANGLE = 270; // 绘制角度
 	private static final float mMin = 0; // 最小值
@@ -29,7 +33,7 @@ public class DashboardView extends View {
 	private static final int REAL_TIME_VALUE_COLOR = 0xffff0000;//实时读数的颜色
 	private static final boolean IS_SHOW_VALUE = true; // 是否显示实时读数
 	private int mRadius; // 扇形半径
-	private float mRealTimeValue = mMin; // 实时读数
+	private float realTimeValue = mMin; // 实时读数
 	private int mStrokeWidth; // 画笔宽度
 	private int mLength1; // 长刻度的相对圆弧的长度
 	private int mLength2; // 刻度读数顶部的相对圆弧的长度
@@ -125,6 +129,50 @@ public class DashboardView extends View {
 		
 		mPLRadius = mRadius - (mLength2 + mRectText.height() + dp2px(5));
 	}
+	private float tempRealTimeValue;
+	
+	private int dp2px(int dp) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+				Resources.getSystem().getDisplayMetrics());
+	}
+	
+	private int sp2px(int sp) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+				Resources.getSystem().getDisplayMetrics());
+	}
+	
+	public float[] getCoordinatePoint(int radius, float angle) {
+		float[] point = new float[2];
+		
+		double arcAngle = Math.toRadians(angle); //将角度转换为弧度
+		if (angle < 90) {
+			point[0] = (float) (mCenterX + Math.cos(arcAngle) * radius);
+			point[1] = (float) (mCenterY + Math.sin(arcAngle) * radius);
+		} else if (angle == 90) {
+			point[0] = mCenterX;
+			point[1] = mCenterY + radius;
+		} else if (angle > 90 && angle < 180) {
+			arcAngle = Math.PI * (180 - angle) / 180.0;
+			point[0] = (float) (mCenterX - Math.cos(arcAngle) * radius);
+			point[1] = (float) (mCenterY + Math.sin(arcAngle) * radius);
+		} else if (angle == 180) {
+			point[0] = mCenterX - radius;
+			point[1] = mCenterY;
+		} else if (angle > 180 && angle < 270) {
+			arcAngle = Math.PI * (angle - 180) / 180.0;
+			point[0] = (float) (mCenterX - Math.cos(arcAngle) * radius);
+			point[1] = (float) (mCenterY - Math.sin(arcAngle) * radius);
+		} else if (angle == 270) {
+			point[0] = mCenterX;
+			point[1] = mCenterY - radius;
+		} else {
+			arcAngle = Math.PI * (360 - angle) / 180.0;
+			point[0] = (float) (mCenterX + Math.cos(arcAngle) * radius);
+			point[1] = (float) (mCenterY - Math.sin(arcAngle) * radius);
+		}
+		
+		return point;
+	}
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -195,7 +243,7 @@ public class DashboardView extends View {
 		}
 		
 		//画指针
-		float degree = M_START_ANGLE + M_SWEEP_ANGLE * (mRealTimeValue - mMin) / (mMax - mMin); // 指针与水平线夹角
+		float degree = M_START_ANGLE + M_SWEEP_ANGLE * (realTimeValue - mMin) / (mMax - mMin); // 指针与水平线夹角
 		int d = dp2px(5); // 指针由两个等腰三角形构成，d为共底边长的一半
 		mPath.reset();
 		float[] p1 = getCoordinatePoint(d, degree - 90);
@@ -218,65 +266,43 @@ public class DashboardView extends View {
 			mPaint.setTextSize(sp2px(18));
 			mPaint.setTextAlign(Paint.Align.CENTER);
 			mPaint.setColor(REAL_TIME_VALUE_COLOR);
-			String value = String.format(Locale.getDefault(), "%.2f", mRealTimeValue) /*+ " MB/S"*/;
+			String value = String.format(Locale.getDefault(), "%.2f", realTimeValue) /*+ " MB/S"*/;
 			mPaint.getTextBounds(value, 0, value.length(), mRectText);
 			canvas.drawText(value, mCenterX, mCenterY + mPSRadius + mRectText.height() * 2, mPaint);
 		}
 	}
 	
-	private int dp2px(int dp) {
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-				Resources.getSystem().getDisplayMetrics());
-	}
-	
-	private int sp2px(int sp) {
-		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
-				Resources.getSystem().getDisplayMetrics());
-	}
-	
-	public float[] getCoordinatePoint(int radius, float angle) {
-		float[] point = new float[2];
-		
-		double arcAngle = Math.toRadians(angle); //将角度转换为弧度
-		if (angle < 90) {
-			point[0] = (float) (mCenterX + Math.cos(arcAngle) * radius);
-			point[1] = (float) (mCenterY + Math.sin(arcAngle) * radius);
-		} else if (angle == 90) {
-			point[0] = mCenterX;
-			point[1] = mCenterY + radius;
-		} else if (angle > 90 && angle < 180) {
-			arcAngle = Math.PI * (180 - angle) / 180.0;
-			point[0] = (float) (mCenterX - Math.cos(arcAngle) * radius);
-			point[1] = (float) (mCenterY + Math.sin(arcAngle) * radius);
-		} else if (angle == 180) {
-			point[0] = mCenterX - radius;
-			point[1] = mCenterY;
-		} else if (angle > 180 && angle < 270) {
-			arcAngle = Math.PI * (angle - 180) / 180.0;
-			point[0] = (float) (mCenterX - Math.cos(arcAngle) * radius);
-			point[1] = (float) (mCenterY - Math.sin(arcAngle) * radius);
-		} else if (angle == 270) {
-			point[0] = mCenterX;
-			point[1] = mCenterY - radius;
-		} else {
-			arcAngle = Math.PI * (360 - angle) / 180.0;
-			point[0] = (float) (mCenterX + Math.cos(arcAngle) * radius);
-			point[1] = (float) (mCenterY - Math.sin(arcAngle) * radius);
-		}
-		
-		return point;
-	}
-	
 	public float getRealTimeValue() {
-		return mRealTimeValue;
+		return realTimeValue;
 	}
 	
-	public void setRealTimeValue(float realTimeValue) {
-		if (mRealTimeValue == realTimeValue || realTimeValue < mMin || realTimeValue > mMax) {
+	public void setRealTimeValue(final float value) {
+		if (this.realTimeValue == value || value < mMin || value > mMax) {
 			return;
 		}
+		this.tempRealTimeValue = this.realTimeValue;
 		
-		mRealTimeValue = realTimeValue;
-		postInvalidate();
+		Animation anim = new Animation() {
+			@Override
+			protected void applyTransformation(float interpolatedTime, Transformation t) {
+				//开始动画以后applyTransformation函数会自动调用，这里的interpolatedTime是 0-1 区间的变量，反映动画的进度
+				super.applyTransformation(interpolatedTime, t);
+				realTimeValue = tempRealTimeValue + interpolatedTime * (value - tempRealTimeValue);
+				Log.i("bqt", "interpolatedTime=" + interpolatedTime + "   realTimeValue=" + realTimeValue);
+				postInvalidate();
+			}
+		};
+		anim.setDuration(ANIMATION_DURATION);
+		this.startAnimation(anim);
+		
+		//不知为什么不能用下面这种动画，感觉应该也是可以的
+		/*ObjectAnimator anim = ObjectAnimator.ofFloat(this, "realTimeValue", value)
+				.setDuration(ANIMATION_DURATION);
+		anim.addUpdateListener(animation -> {
+			realTimeValue = (Float) animation.getAnimatedValue();
+			Log.i("bqt", "realTimeValue=" + realTimeValue);
+			postInvalidate();
+		});
+		anim.start();*/
 	}
 }

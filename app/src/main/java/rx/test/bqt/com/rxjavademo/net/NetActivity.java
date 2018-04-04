@@ -154,7 +154,7 @@ public class NetActivity extends Activity {
 			tv_now_speed.setText(formatData(speed) + "/S");
 			Log.i("bqt", "从系统获取的当前网速：" + formatData(speed) + "/S" + "   " + speed * 1.0f / 1024 / 1024);
 			
-			mDashboardView.setRealTimeValue(speed * 1.0f / 1024 / 1024);
+			//mDashboardView.setRealTimeValue(speed * 1.0f / 1024 / 1024);
 		}
 	}
 	
@@ -178,6 +178,7 @@ public class NetActivity extends Activity {
 						break;
 					case MESSAGE_WHAT_REFUSH_AVE_SPEED:
 						activity.tv_ave_speed.setText(activity.formatData((int) msg.obj) + "/S");
+						activity.mDashboardView.setRealTimeValue(((int) msg.obj) * 1.0f / 1024 / 1024);
 						break;
 					case MESSAGE_WHAT_REFUSH_RESET:
 						activity.reset();
@@ -230,6 +231,7 @@ public class NetActivity extends Activity {
 							aveSpeed = (int) (downloadLen / allUsedTime * 1000);//平均网速
 							tempUsedTime = System.currentTimeMillis();
 							handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_AVE_SPEED, aveSpeed));
+							//handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_NOW_SPEED, 0));
 							Log.i("bqt", "平均网速：" + formatData(aveSpeed) + "/S   已下载长度：" + formatData(downloadLen));
 						}
 					}
