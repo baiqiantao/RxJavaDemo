@@ -18,8 +18,8 @@ import java.util.Locale;
 //https://github.com/woxingxiao/DashboardView/tree/master/app/src/main/java/com/xw/sample/dashboardviewdemo
 public class DashboardView extends View {
 	
-	private static final int M_START_ANGLE = 180; // 起始角度
-	private static final int M_SWEEP_ANGLE = 180; // 绘制角度
+	private static final int M_START_ANGLE = 135; // 起始角度
+	private static final int M_SWEEP_ANGLE = 270; // 绘制角度
 	private static final float mMin = 0; // 最小值
 	private static final float mMax = 5; // 最大值，对应5MB/S
 	private static final int M_SECTION = 10; // 值域（mMax-mMin）等分份数
@@ -111,21 +111,17 @@ public class DashboardView extends View {
 		setMeasuredDimension(width, max + getPaddingTop() + getPaddingBottom());
 		
 		mCenterX = mCenterY = getMeasuredWidth() / 2f;
-		mRectFArc.set(
-				getPaddingLeft() + mStrokeWidth,
+		mRectFArc.set(getPaddingLeft() + mStrokeWidth,
 				getPaddingTop() + mStrokeWidth,
 				getMeasuredWidth() - getPaddingRight() - mStrokeWidth,
-				getMeasuredWidth() - getPaddingBottom() - mStrokeWidth
-		);
+				getMeasuredWidth() - getPaddingBottom() - mStrokeWidth);
 		
 		mPaint.setTextSize(sp2px(10));
 		mPaint.getTextBounds("0", 0, "0".length(), mRectText);
-		mRectFInnerArc.set(
-				getPaddingLeft() + mLength2 + mRectText.height(),
+		mRectFInnerArc.set(getPaddingLeft() + mLength2 + mRectText.height(),
 				getPaddingTop() + mLength2 + mRectText.height(),
 				getMeasuredWidth() - getPaddingRight() - mLength2 - mRectText.height(),
-				getMeasuredWidth() - getPaddingBottom() - mLength2 - mRectText.height()
-		);
+				getMeasuredWidth() - getPaddingBottom() - mLength2 - mRectText.height());
 		
 		mPLRadius = mRadius - (mLength2 + mRectText.height() + dp2px(5));
 	}
