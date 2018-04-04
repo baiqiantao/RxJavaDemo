@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import rx.test.bqt.com.rxjavademo.net.NetActivity;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity1;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity2;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity3;
