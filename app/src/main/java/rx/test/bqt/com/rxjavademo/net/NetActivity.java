@@ -11,6 +11,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
@@ -80,9 +81,8 @@ public class NetActivity extends Activity {
 		handler.postDelayed(this::reset, DURATION_MAXCHECK);
 		checkNetType();
 		
-		btn.setText("测试中");
+		btn.setText("正在ping百度ip...");
 		btn.setEnabled(false);
-		new DownloadThread().start();
 	}
 	
 	/**
@@ -98,21 +98,30 @@ public class NetActivity extends Activity {
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(aBoolean -> {
 					//通的话再检查是什么网，或者网络不可用
+					btn.setText("正在检查网络...");
 					if (aBoolean) {
 						ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 						if (manager != null) {
 							NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 							if (networkInfo != null) {
 								tv_type.setText(networkInfo.getTypeName());//网络类型
+								btn.postDelayed(() -> btn.setText("正在测试网速..."), 500);
+								new DownloadThread().start();
 							} else {
 								tv_type.setText("网络不可用");
+								Toast.makeText(NetActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
+								reset();
 							}
 						} else {
 							tv_type.setText("网络不可用");
+							Toast.makeText(NetActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
+							reset();
 						}
 						//不同的话说明没网
 					} else {
 						tv_type.setText("无网络");
+						Toast.makeText(NetActivity.this, "无网络", Toast.LENGTH_SHORT).show();
+						reset();
 					}
 				});
 	}

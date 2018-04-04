@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 
 public class PingUtils {
 	public static final String BAIDU_IP = "119.75.217.109";
+	public static final String APPLE_IP = "http://captive.apple.com";
 	
 	/**
 	 * ping返回true表示ping通，false表示没有ping通
