@@ -26,14 +26,15 @@ import io.reactivex.schedulers.Schedulers;
 import rx.test.bqt.com.rxjavademo.R;
 
 public class NetActivity extends Activity {
-	public static final int MESSAGE_WHAT_REFUSH_NOW_SPEED = 1;//刷新当前网速
-	public static final int MESSAGE_WHAT_REFUSH_AVE_SPEED = 2;//刷新平均网速
-	public static final int MESSAGE_WHAT_REFUSH_RESET = 4;//重置
 	
 	private static final String URL_DOWNLOAD = "http://f2.market.xiaomi.com/download/AppStore/08caf4c947ec5ded753141a9ca98e9691ad43e32d/com.tencent.wework.apk";
 	
-	private static final int LENGTH_REFUSH_CURRENT_SPEED = 1024 * 10;//下载多少byte内容后刷新一次实时网速
-	private static final int DURATION_AVE_SPEED = 300;//过多久时间后刷新一次平均网速
+	public static final int MESSAGE_WHAT_REFUSH_CURRENT_SPEED = 1;//刷新当前网速
+	public static final int MESSAGE_WHAT_REFUSH_AVE_SPEED = 2;//刷新平均网速
+	public static final int MESSAGE_WHAT_REFUSH_RESET = 3;//重置
+	
+	private static final int DURATION_REFUSH_CURRENT_SPEED = 150;//过多久时间后刷新一次实时网速
+	private static final int DURATION_REFUSH_AVE_SPEED = 300;//过多久时间后刷新一次平均网速
 	private static final int DURATION_MAXCHECK = 5 * 1000;//整个测速过程允许的最大时间
 	
 	private TextView tv_type, tv_now_speed, tv_ave_speed;
@@ -142,7 +143,7 @@ public class NetActivity extends Activity {
 		else return "";
 	}
 	
-	private void showNetSpeed() {
+	private void showCurrentNetSpeed() {
 		long nowTimeStamp = System.currentTimeMillis();
 		long totalRxBytes = TrafficStats.getTotalRxBytes();
 		if (TrafficStats.getUidRxBytes(getApplicationInfo().uid) != TrafficStats.UNSUPPORTED
@@ -152,9 +153,9 @@ public class NetActivity extends Activity {
 			lastTotalRxBytes = TrafficStats.getTotalRxBytes();
 			
 			tv_now_speed.setText(formatData(speed) + "/S");
-			Log.i("bqt", "从系统获取的当前网速：" + formatData(speed) + "/S" + "   " + speed * 1.0f / 1024 / 1024);
+			Log.i("bqt", "当前网速：" + formatData(speed) + "/S");
 			
-			//mDashboardView.setRealTimeValue(speed * 1.0f / 1024 / 1024);
+			mDashboardView.setRealTimeValue(speed * 1.0f / 1024 / 1024);
 		}
 	}
 	
@@ -173,12 +174,11 @@ public class NetActivity extends Activity {
 			NetActivity activity = mSoftReference.get();
 			if (activity != null && msg != null) {
 				switch (msg.what) {
-					case MESSAGE_WHAT_REFUSH_NOW_SPEED:
-						activity.showNetSpeed();
+					case MESSAGE_WHAT_REFUSH_CURRENT_SPEED:
+						activity.showCurrentNetSpeed();
 						break;
 					case MESSAGE_WHAT_REFUSH_AVE_SPEED:
 						activity.tv_ave_speed.setText(activity.formatData((int) msg.obj) + "/S");
-						activity.mDashboardView.setRealTimeValue(((int) msg.obj) * 1.0f / 1024 / 1024);
 						break;
 					case MESSAGE_WHAT_REFUSH_RESET:
 						activity.reset();
@@ -200,48 +200,37 @@ public class NetActivity extends Activity {
 			try {
 				URLConnection connection = new URL(URL_DOWNLOAD).openConnection();
 				InputStream inputStream = connection.getInputStream();
+				Log.i("bqt", "总长度：" + formatData(connection.getContentLength()));
 				
 				long startTime = System.currentTimeMillis();//开始时间
-				long allUsedTime;//已经使用的时长
-				long tempUsedTime = 0, endReadArrayTime = 0, arrayUsedTime;
+				long usedTime;//已经使用的时长
+				long tempTime1 = 0, tempTime2 = 0;
 				
-				int totalByte = connection.getContentLength();//总长度
-				Log.i("bqt", "总长度：" + formatData(totalByte));
-				
-				int currentSpeed, aveSpeed;//当前网速和平均网速
+				int aveSpeed;//当前网速和平均网速
 				int temLen, downloadLen = 0;//已下载的长度
-				byte[] buf = new byte[LENGTH_REFUSH_CURRENT_SPEED];
-				
+				byte[] buf = new byte[1024];
 				while ((temLen = inputStream.read(buf)) != -1 && flag) {
-					//刷新实时网速
-					arrayUsedTime = System.currentTimeMillis() - endReadArrayTime;
-					if (arrayUsedTime > 0) {//防止分母为零时报ArithmeticException
-						currentSpeed = (int) (temLen / arrayUsedTime) * 1000;//当前网速
-						Log.i("bqt", "自己计算的当前的网速为" + formatData(currentSpeed) + "/S");
-						
-						//刷新实时网速。ps：如果要根据时间来刷新实时网速，请采用类似平均网速的方式计算
-						handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_NOW_SPEED, currentSpeed));
+					usedTime = System.currentTimeMillis() - startTime;//毫秒
+					downloadLen += temLen;
+					
+					//刷新当前网速
+					if (System.currentTimeMillis() - tempTime1 > DURATION_REFUSH_CURRENT_SPEED) {
+						tempTime1 = System.currentTimeMillis();
+						handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_CURRENT_SPEED, 0));
 					}
 					
-					//每隔指定时间刷新一次平均网速
-					allUsedTime = System.currentTimeMillis() - startTime;//毫秒
-					downloadLen += temLen;
-					if (System.currentTimeMillis() - tempUsedTime > DURATION_AVE_SPEED) {
-						if (allUsedTime > 0) {//防止分母为零时报ArithmeticException
-							aveSpeed = (int) (downloadLen / allUsedTime * 1000);//平均网速
-							tempUsedTime = System.currentTimeMillis();
+					//刷新平均网速
+					if (System.currentTimeMillis() - tempTime2 > DURATION_REFUSH_AVE_SPEED) {
+						if (usedTime > 0) {//防止分母为零时报ArithmeticException
+							tempTime2 = System.currentTimeMillis();
+							aveSpeed = (int) (downloadLen / usedTime) * 1000;//平均网速，单位秒
 							handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_AVE_SPEED, aveSpeed));
-							//handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_NOW_SPEED, 0));
 							Log.i("bqt", "平均网速：" + formatData(aveSpeed) + "/S   已下载长度：" + formatData(downloadLen));
 						}
 					}
-					
-					endReadArrayTime = System.currentTimeMillis();
 				}
 				
-				//最后再发一个平均网速
-				aveSpeed = (int) (downloadLen / (System.currentTimeMillis() - startTime) * 1000);//平均网速
-				handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_AVE_SPEED, aveSpeed));
+				//重置
 				handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_RESET));
 				inputStream.close();
 			} catch (Exception e) {

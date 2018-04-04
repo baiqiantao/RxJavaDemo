@@ -21,7 +21,7 @@ import java.util.Locale;
 //https://github.com/woxingxiao/DashboardView/tree/master/app/src/main/java/com/xw/sample/dashboardviewdemo
 public class DashboardView extends View {
 	
-	private static final long ANIMATION_DURATION = 250; //动画时长
+	private static final long ANIMATION_DURATION = 130; //动画时长，注意最好不要在一个动画周期内设置多个动画
 	private static final int M_START_ANGLE = 135; // 起始角度
 	private static final int M_SWEEP_ANGLE = 270; // 绘制角度
 	private static final float mMin = 0; // 最小值
@@ -129,6 +129,7 @@ public class DashboardView extends View {
 		
 		mPLRadius = mRadius - (mLength2 + mRectText.height() + dp2px(5));
 	}
+	
 	private float tempRealTimeValue;
 	
 	private int dp2px(int dp) {
