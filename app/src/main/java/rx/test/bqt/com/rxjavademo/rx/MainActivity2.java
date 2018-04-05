@@ -3,16 +3,26 @@ package rx.test.bqt.com.rxjavademo.rx;
 import android.app.ListActivity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subscribers.DisposableSubscriber;
 import rx.test.bqt.com.rxjavademo.R;
 
 public class MainActivity2 extends ListActivity {
@@ -39,10 +49,9 @@ public class MainActivity2 extends ListActivity {
 				getString(R.string.btn_demo_pagination_more),
 				getString(R.string.btn_demo_networkDetector),
 				getString(R.string.btn_demo_using),
-				getString(R.string.btn_demo_multicastPlayground),
-				"",};
+				getString(R.string.btn_demo_multicastPlayground),};
 		
-		tipsArray = new String[]{getString(R.string.btn_demo_form_validation_combinel),
+		tipsArray = new String[]{getString(R.string.msg_demo_form_comb_latest),
 				getString(R.string.btn_demo_pseudocache),
 				getString(R.string.btn_demo_timing),
 				
@@ -55,14 +64,13 @@ public class MainActivity2 extends ListActivity {
 				getString(R.string.btn_demo_pagination_more),
 				getString(R.string.btn_demo_networkDetector),
 				getString(R.string.btn_demo_using),
-				getString(R.string.btn_demo_multicastPlayground),
-				"",};
+				getString(R.string.btn_demo_multicastPlayground),};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>(Arrays.asList(array))));
 	}
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		tv.setText(tipsArray[position]);
+		tv.setText(position < tipsArray.length ? tipsArray[position] : "");
 		switch (position) {
 			case 0:
 				_0();
@@ -100,7 +108,45 @@ public class MainActivity2 extends ListActivity {
 	}
 	
 	private void _0() {
-	
+		EditText _email = new EditText(this);
+		_email.setHint("输入有效的邮箱");
+		EditText _password = new EditText(this);
+		_password.setHint("password，超过8个字符");
+		getListView().addFooterView(_email);
+		getListView().addFooterView(_password);
+		
+		Flowable<CharSequence> emailObs = RxTextView.textChanges(_email).skip(1).toFlowable(BackpressureStrategy.LATEST);
+		Flowable<CharSequence> numberObs = RxTextView.textChanges(_password).skip(1).toFlowable(BackpressureStrategy.LATEST);
+		
+		Flowable.combineLatest(emailObs, numberObs, (newEmail, newPassword) -> {
+			boolean emailValid = !TextUtils.isEmpty(newEmail) && Patterns.EMAIL_ADDRESS.matcher(newEmail).matches();
+			if (!emailValid) {
+				_email.setError("Invalid Email!");
+			}
+			
+			boolean passValid = !TextUtils.isEmpty(newPassword) && newPassword.length() > 8;
+			if (!passValid) {
+				_password.setError("Invalid Password!");
+			}
+			
+			return emailValid && passValid;
+		})
+				.subscribe(new DisposableSubscriber<Boolean>() {
+					@Override
+					public void onNext(Boolean formValid) {
+						Toast.makeText(MainActivity2.this, "是否有效：" + formValid, Toast.LENGTH_SHORT).show();
+					}
+					
+					@Override
+					public void onComplete() {
+						Log.i("bqt", "onComplete");
+					}
+					
+					@Override
+					public void onError(Throwable e) {
+						Log.i("bqt", "onError");
+					}
+				});
 	}
 	
 	private void _1() {

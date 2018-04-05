@@ -1,5 +1,23 @@
 <resources>
     <string name="app_name">Test</string>
+
+
+    <string name="btn0">========================   独立的     ===========================</string>
+    <string name="btn_demo_rxbus">Event Bus with RxJava</string>
+
+    <string name="msg0">========================   独立的     ===========================</string>
+    <string name="msg_demo_rxbus_1">Tap on the below button and RxBus will listen to the events \n\n
+    点击下面的按钮，RxBus将听取事件。 注意：RxBus并不是一个库，而是一种模式，是使用了RxJava的思想来达到EventBus的数据传递效果。</string>
+
+    <string name="msg_pseudoCache_demoInfo_concat">Concat merges the results sequentially. But notice that the latter subscription starts only AFTER the first one completes. Some unnecessary waiting there. \n\n
+    Concat按顺序合并结果。但请注意，后一订阅仅在第一个订阅完成后开始。 那里有一些不必要的等待</string>
+    <string name="msg_pseudoCache_demoInfo_concatEager">Concat eager is cooler. Both subscriptions start at the same time (parallelly) but the order of emission is respected. \n\n
+     concatEager更酷。 两个订阅都同时开始（同时/平行），但排放顺序受到尊重</string>
+    <string name="msg_pseudoCache_demoInfo_merge">Merge presents the result as they come in which is great if the disk is *always* faster. If the disk is made slower than the network call. You can see the results are whack. \n\n
+    如果磁盘速度总是更快，则Merge合并会提供结果（因为他们进来的时候很棒）。如果磁盘比网络调用慢。 你可以看到结果很糟糕（数据不会被丢弃，但是顺序乱掉了）。 </string>
+    <string name="msg_pseudoCache_demoInfo_mergeOptimized">This is an optimized merge and probably want to use. Notice subscriptions happen immediately and network results are respected regardless of when they come in.  Notice though that if the disk is slower it\'s discarded in favor of the "fresh" network data which in this case happens to be faster. \n\n
+    这是一个优化的合并，可能你希望使用。 通知订阅立即发生，并且网络结果受到尊重，无论它们何时进入。但请注意，如果磁盘速度较慢，则会丢弃该磁盘以支持“新鲜”网络数据，在这种情况下，该数据恰好会更快。 </string>
+
     <string name="btn1">========================   1     ===========================</string>
     <string name="btn_demo_schedulers">调度程序和并发\n bg work (schedulers &amp; concurrency)</string>
     <string name="btn_demo_buffer">请求累计（缓冲区）\n accumulate calls (buffer)</string>
@@ -7,22 +25,6 @@
     <string name="btn_demo_retrofit">Retrofit + RxJava</string>
     <string name="btn_demo_double_binding_textview">双重绑定\n Double binding (PublishSubject)</string>
     <string name="btn_demo_polling">用RxJava轮询\n Polling with RxJava</string>
-    <string name="btn_demo_rxbus">\n Event Bus with RxJava</string>
-
-    <string name="btn2">========================   2     ===========================</string>
-    <string name="btn_demo_form_validation_combinel">\n Form Validation with CombineLatest</string>
-    <string name="btn_demo_pseudocache">\n Pseudo cache using concat</string>
-    <string name="btn_demo_timing">\n Variations of timing/intervals/delays</string>
-
-    <string name="btn_demo_timeout">超时长时间运行的作业\n Timeout long running jobs</string>
-    <string name="btn_demo_exponential_backoff">\n Exponential backoff</string>
-    <string name="btn_demo_rotation_persist">\n Rotation persist</string>
-    <string name="btn_demo_volley">\n Volley request demo</string>
-    <string name="btn_demo_pagination">\n Paging example</string>
-    <string name="btn_demo_pagination_more">\n MOAR</string>
-    <string name="btn_demo_networkDetector">\n Network Detector (Subject)</string>
-    <string name="btn_demo_using">\n Setup &amp; teardown resources (using)</string>
-    <string name="btn_demo_multicastPlayground">\n MultiConnect operator playground</string>
 
     <string name="msg1">========================   1     ===========================</string>
     <string name="msg_demo_concurrency_schedulers">This is a demo of how long running operations can be offloaded to a background thread. After the operation is done, we resume back on the main thread. All using RxJava! \n\n To really see this shine. Hit the button multiple times and see how the button click which is a ui operation is never blocked because the long operation only runs in the background \n\n
@@ -37,15 +39,29 @@
     观看结果如何自动更新sed，在您更改输入时。 使用这样的技术，您可以在Angular Js中实现双向绑定，或者更高效地使用像Presentation View Model这样的模式。</string>
     <string name="msg_demo_polling">Demo polling or making a call repeatedly with RxJava.\n\nSimple polling: Notice in the logs how a (simulated) network call is repeatedly made in the background. \n\n
     使用RxJava反复轮询或发起请求。简单轮询：在日志中注意观察一个（模拟的）网络请求是如何在后台重复made的</string>
-    <string name="msg_demo_rxbus_1">Tap on the below button and RxBus will listen to the events \n\n
-    点击下面的按钮，RxBus将听取事件。 注意：RxBus并不是一个库，而是一种模式，是使用了RxJava的思想来达到EventBus的数据传递效果。</string>
+
+
+    <string name="btn2">========================   2     ===========================</string>
+    <string name="btn_demo_form_validation_combinel">使用CombineLatest进行表单验证\n Form Validation with CombineLatest</string>
+    <string name="btn_demo_timing">\n Variations of timing/intervals/delays</string>
+
+    <string name="btn_demo_timeout">超时长时间运行的作业\n Timeout long running jobs</string>
+    <string name="btn_demo_exponential_backoff">\n Exponential backoff</string>
+    <string name="btn_demo_rotation_persist">\n Rotation persist</string>
+    <string name="btn_demo_volley">\n Volley request demo</string>
+    <string name="btn_demo_pagination">\n Paging example</string>
+    <string name="btn_demo_pagination_more">\n MOAR</string>
+    <string name="btn_demo_networkDetector">\n Network Detector (Subject)</string>
+    <string name="btn_demo_using">\n Setup &amp; teardown resources (using)</string>
+    <string name="btn_demo_multicastPlayground">\n MultiConnect operator playground</string>
 
     <string name="msg2">========================   2     ===========================</string>
+    <string name="msg_demo_form_comb_latest">Monitor the state of multiple observables with the combineLatest operator. Only after all the 3 inputs contain valid entries will the submit button light up \n\n
+    使用combineLatest操作符监视多个可观察对象的状态。只有在所有3个输入都包含有效条目后，提交按钮才会亮起。</string>
     <string name="msg_demo_exponential_backoff">These two examples demonstrate retrying and executing with a delay using an exponential backoff strategy. \n\n
     </string>
 
-    <string name="msg_demo_form_comb_latest">Monitor the state of multiple observables with the combineLatest operator. Only after all the 3 inputs contain valid entries will the submit button light up \n\n
-    使用combineLatest操作符监视多个可观察对象的状态。 只有在所有3个输入都包含有效条目后，提交按钮才会亮起。使用combineLatest合并最近N个结点，例如：注册的时候所有输入信息（邮箱、密码、电话号码等）合法才点亮注册按钮。</string>
+
     <string name="msg_demo_timing">BTN 1: run single task once (after 2s complete)\nBTN 2: run task every 1s (start delay of 1s) toggle \nBTN 3: run task every 1s (start immediately) toggle \nBTN 4: run task 5 times every 3s (then complete) \nBTN 5: run task A, pause for sometime, then proceed with Task B \n\n
     </string>
     <string name="msg_demo_rotation_persist">This is an example of starting an Observable and using the result across rotations. There are many ways to do this, we use ViewModels from architecture components \n\n
@@ -68,5 +84,6 @@
     这是终止事件的演示，此事件需要很长时间才能处理。 此演示中的事件应在3秒内超时。 按钮1是需要2秒处理的事件，按钮2是需要5秒处理的n事件。 点击按钮2，并在日志中看到它已被取消，而按钮1则不是这种情况。</string>
     <string name="msg_demo_retrofit_async_task_death">This shows how you can replace an AsyncTask with RxJava. The interesting parts are in the code. \n\n
     </string>
+
 
 </resources>

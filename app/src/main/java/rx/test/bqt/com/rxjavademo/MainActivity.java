@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import rx.test.bqt.com.rxjavademo.net.NetActivity;
+import rx.test.bqt.com.rxjavademo.rx.ConcatActivity;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity1;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity2;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity3;
@@ -27,6 +28,7 @@ public class MainActivity extends ListActivity {
 				"2",
 				"3",
 				getString(R.string.btn_demo_rxbus),
+				"合并：concat、concatEager、merge",
 				"网络监测",
 				"",};
 		tv = new TextView(this);
@@ -52,10 +54,10 @@ public class MainActivity extends ListActivity {
 				startActivity(new Intent(this, RxBusActivity.class));
 				break;
 			case 4:
-				startActivity(new Intent(this, NetActivity.class));
+				startActivity(new Intent(this, ConcatActivity.class));
 				break;
 			case 5:
-				
+				startActivity(new Intent(this, NetActivity.class));
 				break;
 		}
 	}

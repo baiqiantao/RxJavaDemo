@@ -62,8 +62,7 @@ public class MainActivity1 extends ListActivity {
 				
 				getString(R.string.btn_demo_retrofit),
 				getString(R.string.btn_demo_double_binding_textview),
-				getString(R.string.btn_demo_polling),
-				"",};
+				getString(R.string.btn_demo_polling),};
 		
 		tipsArray = new String[]{getString(R.string.msg_demo_concurrency_schedulers),
 				getString(R.string.msg_demo_buffer),
@@ -71,15 +70,14 @@ public class MainActivity1 extends ListActivity {
 				
 				getString(R.string.msg_demo_retrofit),
 				getString(R.string.msg_demo_doublebinding),
-				getString(R.string.msg_demo_polling),
-				"",};
+				getString(R.string.msg_demo_polling),};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>(Arrays.asList(array))));
 	}
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		_counter++;
-		tv.setText(tipsArray[position]);
+		tv.setText(position < tipsArray.length ? tipsArray[position] : "");
 		switch (position) {
 			case 0:
 				_0();
