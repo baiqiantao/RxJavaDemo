@@ -17,6 +17,7 @@ import rx.test.bqt.com.rxjavademo.rx.ConcatActivity;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity1;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity2;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity3;
+import rx.test.bqt.com.rxjavademo.rx.TimingActivity;
 import rx.test.bqt.com.rxjavademo.rx.rxbus.RxBusActivity;
 
 public class MainActivity extends ListActivity {
@@ -29,6 +30,7 @@ public class MainActivity extends ListActivity {
 				"3",
 				getString(R.string.btn_demo_rxbus),
 				"合并：concat、concatEager、merge",
+				"定时：timer、interval、take、delay",
 				"网络监测",
 				"",};
 		tv = new TextView(this);
@@ -57,6 +59,9 @@ public class MainActivity extends ListActivity {
 				startActivity(new Intent(this, ConcatActivity.class));
 				break;
 			case 5:
+				startActivity(new Intent(this, TimingActivity.class));
+				break;
+			case 6:
 				startActivity(new Intent(this, NetActivity.class));
 				break;
 		}
