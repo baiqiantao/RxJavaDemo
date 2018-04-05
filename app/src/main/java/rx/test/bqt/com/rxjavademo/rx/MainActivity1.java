@@ -16,10 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,6 +78,7 @@ public class MainActivity1 extends ListActivity {
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+		_counter++;
 		tv.setText(tipsArray[position]);
 		switch (position) {
 			case 0:
@@ -112,41 +114,48 @@ public class MainActivity1 extends ListActivity {
 	}
 	
 	private void _0() {
-		Observable.just(true)
-				.map(aBoolean -> {
-					Log.i("bqt", "主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
-					SystemClock.sleep(3000);
-					return aBoolean;
-				})
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(new DisposableObserver<Boolean>() {
-					@Override
-					public void onNext(Boolean bool) {
-						Log.i("bqt", "onNext：" + bool + "  主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//true
-					}
-					
-					@Override
-					public void onComplete() {
-						Log.i("bqt", "onComplete");
-					}
-					
-					@Override
-					public void onError(Throwable e) {
-						Log.i("bqt", "onError");
-					}
-				});
+		//简化版1
+		if (_counter % 2 == 0) {
+			disposable = Observable.create(emitter -> {
+				Log.i("bqt", "create是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
+				SystemClock.sleep(3000);
+				emitter.onNext(new Random().nextBoolean());
+			}).map(b -> {
+				Log.i("bqt", "map是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
+				SystemClock.sleep(3000);
+				return b + "---";
+			})
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(b -> {
+						Log.i("bqt", "subscribe中收到的值：" + b);
+						Log.i("bqt", "subscribe是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//true
+					});
+		} else {
+			//简化版2
+			disposable = Observable.just(true, "你好", 20094)
+					.map(object -> {
+						Log.i("bqt", "map2是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
+						SystemClock.sleep(1000);
+						return object;
+					})
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(object -> Log.i("bqt", "subscribe2中收到的值：" + object));
+		}
 	}
 	
 	@SuppressLint("CheckResult")
 	private void _1(View v) {
 		disposable = RxView.clicks(v)
-				.map(onClickEvent -> {
-					Log.i("bqt", "接收到一次点击");
+				.map(notification -> {
+					Log.i("bqt", "接收到一次点击：" + notification.getClass());//com.jakewharton.rxbinding2.internal.Notification
 					return 1;
 				})
 				.buffer(2, TimeUnit.SECONDS)
 				.observeOn(AndroidSchedulers.mainThread())
+				//.subscribe(integers -> Log.i("bqt", "2秒内接收到的点击事件个数：" + integers.size()));
+				//如果有异常但没有重写onError方法捕获异常则会直接崩溃：OnErrorNotImplementedException
 				.subscribeWith(new DisposableObserver<List<Integer>>() {
 					@Override
 					public void onComplete() {
@@ -160,51 +169,32 @@ public class MainActivity1 extends ListActivity {
 					
 					@Override
 					public void onNext(List<Integer> integers) {
-						if (integers.size() > 0) {
-							Log.i("bqt", "onNext：个数=" + integers.size() + "，开始统计下一个点击周期");
-						} else {
-							Log.i("bqt", "onNext：没有收到点击事件");
-						}
+						Log.i("bqt", "2秒内接收到的点击事件个数：" + integers.size());
 					}
 				});
 	}
 	
 	private void _2() {
 		EditText editText = new EditText(this);
-		editText.setHint("会在停止输入后的400ms后判断内容是否有改变");
+		editText.setHint("会在停止输入后的500ms后判断内容是否有改变");
 		getListView().addFooterView(editText);
 		disposable = RxTextView.textChangeEvents(editText)
-				.debounce(400, TimeUnit.MILLISECONDS) //会在停止输入后的400ms后判断是否有改变
-				.filter(changes -> !TextUtils.isEmpty(changes.text().toString()))//过滤掉空字符串
+				.debounce(500, TimeUnit.MILLISECONDS) //会在停止输入后的500ms后判断是否有改变
+				.filter(textChangeEvent -> {
+					String text = textChangeEvent.text().toString();
+					Log.i("bqt", "改变后的内容：" + text + "   " + textChangeEvent.getClass());
+					return !TextUtils.isEmpty(text);//过滤掉空字符串
+				})
+				.map(textChangeEvent -> textChangeEvent.text().toString())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribeWith(new DisposableObserver<TextViewTextChangeEvent>() {
-					@Override
-					public void onComplete() {
-						Log.i("bqt", "onComplete");
-					}
-					
-					@Override
-					public void onError(Throwable e) {
-						Log.i("bqt", "onError");
-					}
-					
-					@Override
-					public void onNext(TextViewTextChangeEvent onTextChangeEvent) {
-						Log.i("bqt", "onNext：" + onTextChangeEvent.text().toString());
-					}
-				});
+				.subscribe(text -> Log.i("bqt", "最新内容为：" + text));
 	}
 	
 	private void _3() {
-		compositeDisposable = new CompositeDisposable();
-		
 		Interceptor interceptor = chain -> {
 			Request request = chain.request()
-					.newBuilder()
+					.newBuilder()//自定义Header拼接到后面即可
 					.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-					.addHeader("Accept-Encoding", "gzip, deflate")
-					.addHeader("Connection", "keep-alive")
-					.addHeader("Accept", "*/*")//自定义Header拼接到后面即可
 					.build();
 			return chain.proceed(request);
 		};
@@ -214,68 +204,49 @@ public class MainActivity1 extends ListActivity {
 				.connectTimeout(5, TimeUnit.SECONDS)
 				.build();
 		
+		Gson gson = new GsonBuilder()
+				.serializeNulls()//序列化null
+				.setDateFormat("yyyy-MM-dd") // 设置日期时间格式，另有2个重载方法。在序列化和反序化时均生效
+				.setPrettyPrinting()//格式化输出。设置后，gson序列号后的字符串为一个格式化的字符串
+				.setLenient()//默认情况下，Gson是严格的，只接受RFC 4627规定的JSON，设置后对JSON格式的要求更宽松
+				.create();
+		
 		Retrofit retrofit = new Retrofit.Builder()
 				.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-				.addConverterFactory(GsonConverterFactory.create())
-				.baseUrl("https://api.github.com")
+				.addConverterFactory(GsonConverterFactory.create(gson))
+				.baseUrl("https://api.github.com/")
 				.client(client)
 				.build();
 		
 		GithubApi githubApi = retrofit.create(GithubApi.class);
 		
-		Disposable addDisposable = githubApi.contributors("square", "retrofit")
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribeWith(new DisposableObserver<List<Contributor>>() {
-					@Override
-					public void onComplete() {
-						Log.i("bqt", "onComplete");
-					}
-					
-					@Override
-					public void onError(Throwable e) {
-						Log.i("bqt", "onError:" + e.getMessage());
-					}
-					
-					@Override
-					public void onNext(List<Contributor> contributors) {
+		if (_counter % 2 == 0) {
+			//这垃圾老是拒绝访问：HTTP 403 Forbidden
+			disposable = githubApi.contributors("square", "retrofit")
+					.subscribeOn(Schedulers.io())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(contributors -> {
 						for (Contributor c : contributors) {
 							Log.i("bqt", "onNext【" + c.login + "   " + c.contributions + "】");
 						}
-					}
-				});
-		
-		Disposable addDisposable2 = githubApi
-				.contributors("square", "retrofit")
-				.flatMap(Observable::fromIterable)
-				.flatMap(contributor -> {
-					Observable<User> ob = githubApi.user(contributor.login).filter(user -> !isEmpty(user.name) && !isEmpty(user.email));
-					return Observable.zip(ob, Observable.just(contributor), Pair::new);
-				})
-				.subscribeOn(Schedulers.newThread())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribeWith(
-						new DisposableObserver<Pair<User, Contributor>>() {
-							@Override
-							public void onComplete() {
-								Log.i("bqt", "onComplete2");
-							}
-							
-							@Override
-							public void onError(Throwable e) {
-								Log.i("bqt", "onError2:" + e.getMessage());
-							}
-							
-							@Override
-							public void onNext(Pair<User, Contributor> pair) {
-								User user = pair.first;
-								Contributor contributor = pair.second;
-								Log.i("bqt", "onNext2【" + user.name + "   " + contributor.contributions + "】");
-							}
-						});
-		
-		compositeDisposable.add(addDisposable);
-		compositeDisposable.add(addDisposable2);
+					});
+		} else {
+			disposable = githubApi.contributors("square", "retrofit")
+					.flatMap(Observable::fromIterable)
+					.flatMap(contributor -> {
+						Observable<User> ob = githubApi.user(contributor.login).filter(user -> !isEmpty(user.name) && !isEmpty(user.email));
+						return Observable.zip(ob, Observable.just(contributor), Pair::new);
+					})
+					.subscribeOn(Schedulers.newThread())
+					.observeOn(AndroidSchedulers.mainThread())
+					.subscribe(pair -> {
+						User user = pair.first;
+						Contributor contributor = pair.second;
+						Log.i("bqt", "onNext2【" + user.name + "   " + contributor.contributions + "】");
+					});
+		}
+		compositeDisposable = new CompositeDisposable();
+		compositeDisposable.add(disposable);
 	}
 	
 	private void _4() {
@@ -283,16 +254,20 @@ public class MainActivity1 extends ListActivity {
 	}
 	
 	private void _5() {
-		compositeDisposable = new CompositeDisposable();
-		Disposable d = Flowable.interval(0, 1000, TimeUnit.MILLISECONDS)//初始延迟，期，单位
+		disposable = Flowable.interval(0, 1000, TimeUnit.MILLISECONDS)//初始延迟，间隔，单位
 				.map(attempt -> {
-					SystemClock.sleep(1000 * new Random().nextInt(5));
-					_counter++;
-					return String.valueOf(_counter);
+					long time = 1000 + 1000 * new Random().nextInt(5);
+					SystemClock.sleep(time);
+					return String.format("已完成第 %s 次轮询，耗时：%s ms", attempt, time);
 				})
-				.take(8)//轮询次数
-				.doOnSubscribe(subscription -> Log.i("bqt", String.format("开始简单轮询 - %s", _counter)))
-				.subscribe(taskName -> Log.i("bqt", String.format("执行轮询任务 [%s]", taskName)));
-		compositeDisposable.add(d);
+				.take(5)//轮询次数
+				.doOnSubscribe(subscription -> {
+					/*subscription.cancel();
+					subscription.request(0L);*/
+					Log.i("bqt", "【doOnSubscribe】" + subscription.getClass());
+				})
+				.subscribe(taskName -> Log.i("bqt", "【subscribe】" + taskName));
+		compositeDisposable = new CompositeDisposable();
+		compositeDisposable.add(disposable);
 	}
 }
