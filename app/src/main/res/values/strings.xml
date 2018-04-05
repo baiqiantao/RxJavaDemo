@@ -1,14 +1,12 @@
 <resources>
     <string name="app_name">Test</string>
-
-
-    <string name="btn0">========================   独立的     ===========================</string>
-    <string name="btn_demo_rxbus">Event Bus with RxJava</string>
-
     <string name="msg0">========================   独立的     ===========================</string>
     <string name="msg_demo_rxbus_1">Tap on the below button and RxBus will listen to the events \n\n
     点击下面的按钮，RxBus将听取事件。 注意：RxBus并不是一个库，而是一种模式，是使用了RxJava的思想来达到EventBus的数据传递效果。</string>
+    <string name="msg_demo_timing">BTN 1: run single task once (after 2s complete)\nBTN 2: run task every 1s (start delay of 1s) toggle \nBTN 3: run task every 1s (start immediately) toggle \nBTN 4: run task 5 times every 1s (then complete) \nBTN 5: run task A, pause for sometime, then proceed with Task B \n\n
+    1：运行一次任务（2s后完成）\n 2：每1s运行一次（启动延迟1s）\n 3：每1秒运行一次（立即启动）\n  4：每1秒运行一次任务，5次后完成\n 5：运行任务A，暂停一段时间，然后继续执行任务B</string>
 
+    <string name="msg00">==============   合并：concat、concatEager、merge     =================</string>
     <string name="msg_pseudoCache_demoInfo_concat">Concat merges the results sequentially. But notice that the latter subscription starts only AFTER the first one completes. Some unnecessary waiting there. \n\n
     Concat按顺序合并结果。但请注意，后一订阅仅在第一个订阅完成后开始。 那里有一些不必要的等待</string>
     <string name="msg_pseudoCache_demoInfo_concatEager">Concat eager is cooler. Both subscriptions start at the same time (parallelly) but the order of emission is respected. \n\n
@@ -59,8 +57,7 @@
     使用combineLatest操作符监视多个可观察对象的状态。只有在所有3个输入都包含有效条目后，提交按钮才会亮起。</string>
     <string name="msg_demo_exponential_backoff">These two examples demonstrate retrying and executing with a delay using an exponential backoff strategy. \n\n
     </string>
-    <string name="msg_demo_timing">BTN 1: run single task once (after 2s complete)\nBTN 2: run task every 1s (start delay of 1s) toggle \nBTN 3: run task every 1s (start immediately) toggle \nBTN 4: run task 5 times every 1s (then complete) \nBTN 5: run task A, pause for sometime, then proceed with Task B \n\n
-    1：运行一次任务（2s后完成）\n 2：每1s运行一次（启动延迟1s）\n 3：每1秒运行一次（立即启动）\n  4：每1秒运行一次任务，5次后完成\n 5：运行任务A，暂停一段时间，然后继续执行任务B</string>
+
     <string name="msg_demo_rotation_persist">This is an example of starting an Observable and using the result across rotations. There are many ways to do this, we use ViewModels from architecture components \n\n
     </string>
     <string name="msg_demo_network_detector">This is a demo of how to use Subjects to detect Network connectivity\nToggle your Wifi/Network on or off and notice the logs \n\n

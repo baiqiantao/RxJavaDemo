@@ -28,7 +28,7 @@ public class MainActivity extends ListActivity {
 		String[] array = {"1",
 				"2",
 				"3",
-				getString(R.string.btn_demo_rxbus),
+				"RxBus",
 				"合并：concat、concatEager、merge",
 				"定时：timer、interval、take、delay",
 				"网络监测",
