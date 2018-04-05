@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package rx.test.bqt.com.rxjavademo.rx.rxbus;
 
 import com.jakewharton.rxrelay2.PublishRelay;
 import com.jakewharton.rxrelay2.Relay;

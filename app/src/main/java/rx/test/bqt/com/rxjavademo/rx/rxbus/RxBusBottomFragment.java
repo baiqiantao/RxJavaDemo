@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package rx.test.bqt.com.rxjavademo.rx.rxbus;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.flowables.ConnectableFlowable;
 
-public class RxBusDemo_BottomFragment extends Fragment {
+public class RxBusBottomFragment extends Fragment {
 	
 	private RxBus rxbus;
 	private CompositeDisposable disposable;

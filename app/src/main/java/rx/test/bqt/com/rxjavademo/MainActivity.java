@@ -16,7 +16,7 @@ import rx.test.bqt.com.rxjavademo.net.NetActivity;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity1;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity2;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity3;
-import rx.test.bqt.com.rxjavademo.rx.RxBusActivity;
+import rx.test.bqt.com.rxjavademo.rx.rxbus.RxBusActivity;
 
 public class MainActivity extends ListActivity {
 	private TextView tv;

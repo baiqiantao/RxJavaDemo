@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".rx.RxBusActivity"/>
+        <activity android:name=".rx.rxbus.RxBusActivity"/>
         <activity android:name=".rx.MainActivity1"/>
         <activity android:name=".rx.MainActivity2"/>
         <activity android:name=".rx.MainActivity3"/>

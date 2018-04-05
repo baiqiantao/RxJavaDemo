@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package rx.test.bqt.com.rxjavademo.rx.rxbus;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class RxBusDemo_TopFragment extends Fragment {
+public class RxBusTopFragment extends Fragment {
 	
 	private RxBus rxBus;
 	
@@ -25,7 +25,7 @@ public class RxBusDemo_TopFragment extends Fragment {
 		TextView tv = new TextView(getContext());
 		tv.setTextColor(Color.BLUE);
 		tv.setBackgroundColor(Color.GRAY);
-		tv.setText("点击通过RxBus发送事件");
+		tv.setText("点击后通过RxBus发送事件");
 		tv.setGravity(Gravity.CENTER);
 		tv.setOnClickListener(view -> {
 			if (rxBus.hasObservers()) {

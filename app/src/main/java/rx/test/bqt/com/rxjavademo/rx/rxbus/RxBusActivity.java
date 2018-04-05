@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package rx.test.bqt.com.rxjavademo.rx.rxbus;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,8 +14,8 @@ public class RxBusActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rxbus);
 		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.demo_rxbus_frag_1, new RxBusDemo_TopFragment())
-				.replace(R.id.demo_rxbus_frag_2, new RxBusDemo_BottomFragment())
+				.replace(R.id.rxbus_frag_top, new RxBusTopFragment())
+				.replace(R.id.rxbus_frag_bottom, new RxBusBottomFragment())
 				.commit();
 	}
 	
@@ -30,7 +30,7 @@ public class RxBusActivity extends AppCompatActivity {
 	static class TapEvent {
 		public String name;
 		
-		public TapEvent(String name) {
+		TapEvent(String name) {
 			this.name = name;
 		}
 	}
