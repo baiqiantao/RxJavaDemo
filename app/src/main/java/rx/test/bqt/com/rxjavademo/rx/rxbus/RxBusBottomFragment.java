@@ -45,27 +45,20 @@ public class RxBusBottomFragment extends Fragment {
 		
 		ConnectableFlowable<Object> tapEventEmitter = rxbus.asFlowable().publish();
 		
-		Disposable d = tapEventEmitter.subscribe(event -> {
-			if (event instanceof RxBusActivity.TapEvent) {
-				tv.append(((RxBusActivity.TapEvent) event).name + "\n");
-			}
-		});
-		Disposable d2 = tapEventEmitter.publish(stream -> stream.buffer(stream.debounce(1, TimeUnit.SECONDS)))
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(taps -> {
-					if (taps != null && taps.size() > 0) {
-						tv.append("      连击次数：" + taps.size() + "\n");
-						for (int i = 0; i < taps.size(); i++) {
-							if (taps.get(i) instanceof RxBusActivity.TapEvent) {
-								tv.append("            " + ((RxBusActivity.TapEvent) taps.get(i)).name + "\n");
-							}
-						}
-					}
-				});
+		Disposable disposable1 = tapEventEmitter
+				.filter(event -> event instanceof RxBusActivity.TapEvent)
+				.subscribe(event -> tv.append(((RxBusActivity.TapEvent) event).name + "\n"));
 		
-		disposable.add(d);
-		disposable.add(d2);
-		disposable.add(tapEventEmitter.connect());
+		Disposable disposable2 = tapEventEmitter
+				.publish(stream -> stream.buffer(stream.debounce(200, TimeUnit.MILLISECONDS)))
+				.observeOn(AndroidSchedulers.mainThread())
+				.filter(taps -> taps != null && taps.size() > 0)
+				//.filter(taps -> taps.get(0) instanceof RxBusActivity.TapEvent)
+				.subscribe(taps -> tv.append("\t连击次数：" + taps.size() + "\n"));
+		
+		this.disposable.add(disposable1);
+		this.disposable.add(disposable2);
+		this.disposable.add(tapEventEmitter.connect());
 	}
 	
 	@Override
