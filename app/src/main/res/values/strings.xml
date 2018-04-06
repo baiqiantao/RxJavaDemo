@@ -41,7 +41,7 @@
 
     <string name="btn2">========================   2     ===========================</string>
     <string name="btn_demo_form_validation_combinel">使用CombineLatest进行表单验证\n Form Validation with CombineLatest</string>
-    <string name="btn_demo_timing">时间/间隔/延迟的变化\n Variations of timing/intervals/delays</string>
+
     <string name="btn_demo_timeout">超时长时间运行的作业\n Timeout long running jobs</string>
     <string name="btn_demo_exponential_backoff">\n Exponential backoff</string>
     <string name="btn_demo_rotation_persist">\n Rotation persist</string>
@@ -55,6 +55,7 @@
     <string name="msg2">========================   2     ===========================</string>
     <string name="msg_demo_form_comb_latest">Monitor the state of multiple observables with the combineLatest operator. Only after all the 3 inputs contain valid entries will the submit button light up \n\n
     使用combineLatest操作符监视多个可观察对象的状态。只有在所有3个输入都包含有效条目后，提交按钮才会亮起。</string>
+
     <string name="msg_demo_exponential_backoff">These two examples demonstrate retrying and executing with a delay using an exponential backoff strategy. \n\n
     </string>
 

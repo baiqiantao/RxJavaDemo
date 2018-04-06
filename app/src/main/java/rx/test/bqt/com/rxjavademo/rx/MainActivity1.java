@@ -259,11 +259,7 @@ public class MainActivity1 extends ListActivity {
 					return String.format("已完成第 %s 次轮询，耗时：%s ms", attempt, time);
 				})
 				.take(5)//轮询次数
-				.doOnSubscribe(subscription -> {
-					/*subscription.cancel();
-					subscription.request(0L);*/
-					Log.i("bqt", "【doOnSubscribe】" + subscription.getClass());
-				})
+				.doOnSubscribe(subscription -> Log.i("bqt", "【doOnSubscribe】" + subscription.getClass()))
 				.subscribe(taskName -> Log.i("bqt", "【subscribe】" + taskName));
 		compositeDisposable = new CompositeDisposable();
 		compositeDisposable.add(disposable);

@@ -37,7 +37,7 @@ public class MainActivity2 extends ListActivity {
 		tv.setTextColor(Color.BLUE);
 		getListView().addFooterView(tv);
 		String[] array = {getString(R.string.btn_demo_form_validation_combinel),
-				getString(R.string.btn_demo_timing),
+				
 				
 				getString(R.string.msg_demo_timeout),
 				getString(R.string.btn_demo_exponential_backoff),
@@ -51,7 +51,7 @@ public class MainActivity2 extends ListActivity {
 				getString(R.string.btn_demo_multicastPlayground),};
 		
 		tipsArray = new String[]{getString(R.string.msg_demo_form_comb_latest),
-				getString(R.string.btn_demo_timing),
+			
 				
 				getString(R.string.msg_demo_timeout),
 				getString(R.string.btn_demo_exponential_backoff),

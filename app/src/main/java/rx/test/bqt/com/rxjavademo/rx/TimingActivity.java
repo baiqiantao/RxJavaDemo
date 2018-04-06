@@ -18,15 +18,12 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.subscribers.DefaultSubscriber;
 import io.reactivex.subscribers.DisposableSubscriber;
 import rx.test.bqt.com.rxjavademo.R;
 
 public class TimingActivity extends ListActivity {
 	private TextView tvTips;
-	
-	private DisposableSubscriber<Long> disposableSubscriber1;
-	private DisposableSubscriber<Long> disposableSubscriber2;
+	private DisposableSubscriber<Long> disposableSubscriber;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,129 +44,71 @@ public class TimingActivity extends ListActivity {
 	}
 	
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (disposableSubscriber != null && !disposableSubscriber.isDisposed()) {
+			disposableSubscriber.dispose();
+		}
+	}
+	
+	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		tvTips.setText("");
 		printWithTime("点击");
-		switch (position - 1) {
-			case 0:
-				Flowable.timer(2, TimeUnit.SECONDS)//delay: the initial delay before emitting a single 0L
-						.observeOn(AndroidSchedulers.mainThread())
-						.subscribe(new DisposableSubscriber<Long>() {
-							@Override
-							public void onComplete() {
-								printWithTime("onComplete");
-							}
-							
-							@Override
-							public void onError(Throwable e) {
-								printWithTime("onError  " + e.getMessage());
-							}
-							
-							@Override
-							public void onNext(Long number) {
-								printWithTime("onNext   " + number + "   ");
-							}
-						});
-				break;
-			case 1:
-				if (disposableSubscriber1 != null && !disposableSubscriber1.isDisposed()) {
-					disposableSubscriber1.dispose();
-					printWithTime("dispose");
-				} else {
-					disposableSubscriber1 = new DisposableSubscriber<Long>() {
-						@Override
-						public void onComplete() {
-							printWithTime("onComplete");
-						}
-						
-						@Override
-						public void onError(Throwable e) {
-							printWithTime("onError  " + e.getMessage());
-						}
-						
-						@Override
-						public void onNext(Long number) {
-							printWithTime("onNext   " + number + "   ");
-						}
-					};
+		if (disposableSubscriber != null && !disposableSubscriber.isDisposed()) {
+			disposableSubscriber.dispose();
+			printWithTime("dispose");
+		} else {
+			disposableSubscriber = new DisposableSubscriber<Long>() {
+				@Override
+				public void onComplete() {
+					printWithTime("onComplete");
+				}
+				
+				@Override
+				public void onError(Throwable e) {
+					printWithTime("onError  " + e.getMessage());
+				}
+				
+				@Override
+				public void onNext(Long number) {
+					printWithTime("onNext   " + number + "   ");
+				}
+			};
+			
+			switch (position - 1) {
+				case 0:
+					Flowable.timer(2, TimeUnit.SECONDS)//delay: the initial delay before emitting a single 0L
+							.observeOn(AndroidSchedulers.mainThread())
+							.subscribe(disposableSubscriber);
+					break;
+				case 1:
 					Flowable.interval(1, TimeUnit.SECONDS)//period: the period size in time units
 							.observeOn(AndroidSchedulers.mainThread())
-							.subscribe(disposableSubscriber1);
-				}
-				break;
-			case 2:
-				if (disposableSubscriber2 != null && !disposableSubscriber2.isDisposed()) {
-					disposableSubscriber2.dispose();
-					printWithTime("dispose");
-				} else {
-					disposableSubscriber2 = new DisposableSubscriber<Long>() {
-						@Override
-						public void onComplete() {
-							printWithTime("onComplete");
-						}
-						
-						@Override
-						public void onError(Throwable e) {
-							printWithTime("onError  " + e.getMessage());
-						}
-						
-						@Override
-						public void onNext(Long number) {
-							printWithTime("onNext   " + number + "   ");
-						}
-					};
-					Flowable.interval(0, 1, TimeUnit.SECONDS)
-							//initialDelay: the initial delay time to wait before emitting the first value of 0L
+							.subscribe(disposableSubscriber);
+					break;
+				case 2:
+					Flowable.interval(0, 1, TimeUnit.SECONDS) //initialDelay: the initial delay time to wait before emitting the first value of 0L
 							.observeOn(AndroidSchedulers.mainThread())
-							.subscribe(disposableSubscriber2);
-				}
-				break;
-			case 3:
-				Flowable.interval(1, TimeUnit.SECONDS)
-						.take(5)//the maximum number of items to emit
-						.observeOn(AndroidSchedulers.mainThread())
-						.subscribe(new DisposableSubscriber<Long>() {
-							@Override
-							public void onComplete() {
-								printWithTime("onComplete");
-							}
+							.subscribe(disposableSubscriber);
+					break;
+				case 3:
+					Flowable.interval(1, TimeUnit.SECONDS)
+							.take(5)//the maximum number of items to emit
+							.observeOn(AndroidSchedulers.mainThread())
+							.subscribe(disposableSubscriber);
+					break;
+				case 4:
+					Flowable.just(20094L)
+							.doOnNext(input -> printWithTime("【doOnNext】Do task A right away " + input))
+							.delay(2, TimeUnit.SECONDS)//delay: the delay to shift the source by
+							.observeOn(AndroidSchedulers.mainThread())//必须切到主线程才能修改TextView的内容
 							
-							@Override
-							public void onError(Throwable e) {
-								printWithTime("onError  " + e.getMessage());
-							}
-							
-							@Override
-							public void onNext(Long number) {
-								printWithTime("onNext   " + number + "   ");
-							}
-						});
-				break;
-			case 4:
-				Flowable.just("Do task A right away")
-						.doOnNext(input -> printWithTime("【doOnNext】" + input))
-						.delay(2, TimeUnit.SECONDS)//delay: the delay to shift the source by
-						.observeOn(AndroidSchedulers.mainThread())//必须切到主线程才能修改TextView的内容
-						
-						.doOnNext(input -> printWithTime("【doOnNext】Doing Task B after a delay  \n【oldInput】" + input))
-						.observeOn(AndroidSchedulers.mainThread())
-						.subscribe(new DefaultSubscriber<String>() {
-							@Override
-							public void onComplete() {
-								printWithTime("【onComplete】");
-							}
-							
-							@Override
-							public void onError(Throwable e) {
-								printWithTime("【onError】" + e.getMessage());
-							}
-							
-							@Override
-							public void onNext(String input) {
-								printWithTime("【onNext】" + input + "   ");
-							}
-						});
-				break;
+							.doOnNext(input -> printWithTime("【doOnNext】Doing Task B after a delay 【oldInput】" + input))
+							.observeOn(AndroidSchedulers.mainThread())
+							.subscribe(disposableSubscriber);
+					break;
+			}
 		}
 	}
 	
