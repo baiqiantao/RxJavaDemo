@@ -41,9 +41,9 @@
 
     <string name="btn2">========================   2     ===========================</string>
     <string name="btn_demo_form_validation_combinel">使用CombineLatest进行表单验证\n Form Validation with CombineLatest</string>
-
     <string name="btn_demo_timeout">超时长时间运行的作业\n Timeout long running jobs</string>
-    <string name="btn_demo_exponential_backoff">\n Exponential backoff</string>
+    <string name="btn_demo_exponential_backoff">指数退避\n Exponential backoff</string>
+
     <string name="btn_demo_rotation_persist">\n Rotation persist</string>
     <string name="btn_demo_volley">\n Volley request demo</string>
     <string name="btn_demo_pagination">\n Paging example</string>
@@ -54,10 +54,11 @@
 
     <string name="msg2">========================   2     ===========================</string>
     <string name="msg_demo_form_comb_latest">Monitor the state of multiple observables with the combineLatest operator. Only after all the 3 inputs contain valid entries will the submit button light up \n\n
-    使用combineLatest操作符监视多个可观察对象的状态。只有在所有3个输入都包含有效条目后，提交按钮才会亮起。</string>
-
+    使用combineLatest操作符监视多个可观察对象的状态。只有在所有3个输入都包含有效条目后，提交按钮才会亮起。\n</string>
+    <string name="msg_demo_timeout">This is a demo of terminating events, that take too long to process. Events in this demo should timeout in 3 seconds. Button 1 is an event that takes 2s to process, and Button 2 is a n event that takes 5s to process. Hit Button 2, and see in the logs that it\'s been cancelled, while this is not the case for Button 1. \n\n
+    这是终止(到期)事件的演示，此事件需要很长时间才能处理。 此演示中的事件应在3秒内超时。 按钮1是需要2秒处理的事件，按钮2是需要5秒处理的n事件。 点击按钮2，并在日志中看到它已被取消，而按钮1则不是这种情况。\n</string>
     <string name="msg_demo_exponential_backoff">These two examples demonstrate retrying and executing with a delay using an exponential backoff strategy. \n\n
-    </string>
+   这两个示例演示了，通过使用指数退避策略，retrying和executing with a delay(重试和延迟执行)。\n </string>
 
     <string name="msg_demo_rotation_persist">This is an example of starting an Observable and using the result across rotations. There are many ways to do this, we use ViewModels from architecture components \n\n
     </string>
@@ -75,8 +76,7 @@
     </string>
     <string name="msg_demo_multicast_replayingShare">Courtesy: new #AndroidDev on the block - JakeWharton. exactly like replay(1).refCount(), but caches the last item even when upstream has been disposed off/released. Hit S1, Hit S2, Hit S1, Hit S2 (notice observable is disposed). Hit S1/S2 again (notice we start with last item emitted) \n\n
     </string>
-    <string name="msg_demo_timeout">This is a demo of terminating events, that take too long to process. Events in this demo should timeout in 3 seconds. Button 1 is an event that takes 2s to process, and Button 2 is a n event that takes 5s to process. Hit Button 2, and see in the logs that it\'s been cancelled, while this is not the case for Button 1. \n\n
-    这是终止事件的演示，此事件需要很长时间才能处理。 此演示中的事件应在3秒内超时。 按钮1是需要2秒处理的事件，按钮2是需要5秒处理的n事件。 点击按钮2，并在日志中看到它已被取消，而按钮1则不是这种情况。</string>
+
     <string name="msg_demo_retrofit_async_task_death">This shows how you can replace an AsyncTask with RxJava. The interesting parts are in the code. \n\n
     </string>
 

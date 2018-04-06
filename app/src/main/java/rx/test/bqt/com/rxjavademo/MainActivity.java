@@ -25,8 +25,8 @@ public class MainActivity extends ListActivity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		String[] array = {"create、just、map、subscribeOn、observeOn、subscribe、buffer、rxbinding2(textChangeEvents)、debounce、filter、interval、take、Retrofit系列",
-				"rxbinding2(textChanges)、combineLatest",
+		String[] array = {"create、just、map、subscribeOn、observeOn、subscribe、buffer、rxbinding2(RxTextView)、debounce、filter、interval、take、Retrofit系列",
+				"combineLatest、timeout、error、retryWhen、range、extensions(MathFlowable)",
 				"3",
 				"RxBus",
 				"合并：concat、concatEager、merge",

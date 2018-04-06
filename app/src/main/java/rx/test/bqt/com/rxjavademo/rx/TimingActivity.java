@@ -72,7 +72,7 @@ public class TimingActivity extends ListActivity {
 				
 				@Override
 				public void onNext(Long number) {
-					printWithTime("onNext   " + number + "   ");
+					printWithTime("onNext   " + number);
 				}
 			};
 			
