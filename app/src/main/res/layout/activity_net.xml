@@ -3,7 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#800F"
+              android:background="#eee"
               android:orientation="vertical">
 
     <LinearLayout
@@ -95,10 +95,10 @@
     </LinearLayout>
 
 
-    <rx.test.bqt.com.rxjavademo.net.DashboardView
+    <rx.test.bqt.com.rxjavademo.net.DashboardView2
         android:id="@+id/dashboard_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"/>
 

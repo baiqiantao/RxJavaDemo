@@ -38,7 +38,7 @@ public class NetActivity extends Activity {
 	private static final int DURATION_MAXCHECK = 5 * 1000;//整个测速过程允许的最大时间
 	
 	private TextView tv_type, tv_now_speed, tv_ave_speed;
-	private DashboardView mDashboardView;
+	private DashboardView2 mDashboardView;
 	private Button btn;
 	private boolean flag = false;
 	private Handler handler = new StaticUiHandler(this);
@@ -104,7 +104,8 @@ public class NetActivity extends Activity {
 							NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 							if (networkInfo != null) {
 								tv_type.setText(networkInfo.getTypeName());//网络类型
-								btn.postDelayed(() -> btn.setText("正在测试网速..."), 500);
+								//btn.postDelayed(() -> btn.setText("正在测试网速..."), 500);
+								 btn.setText("正在测试网速...");
 								new DownloadThread().start();
 							} else {
 								tv_type.setText("网络不可用");
@@ -149,7 +150,7 @@ public class NetActivity extends Activity {
 			tv_now_speed.setText(PingUtils.formatData(speed) + "/S");
 			Log.i("bqt", "当前网速：" + PingUtils.formatData(speed) + "/S");
 			
-			mDashboardView.setRealTimeValue(speed * 1.0f / 1024 / 1024);
+			mDashboardView.setRealTimeValueWithAnimation(speed * 1.0f / 1024 / 1024);
 		}
 	}
 	
