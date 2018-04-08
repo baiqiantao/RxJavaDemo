@@ -37,12 +37,13 @@ public class NetActivity extends Activity {
 	private static final int DURATION_REFUSH_AVE_SPEED = 300;//过多久时间后刷新一次平均网速
 	private static final int DURATION_MAXCHECK = 5 * 1000;//整个测速过程允许的最大时间
 	
-	private TextView tv_type, tv_now_speed, tv_ave_speed;
+	private TextView speed_max, speed_min, speed_ave;
 	private DashboardView2 mDashboardView;
 	private Button btn;
 	private boolean flag = false;
 	private Handler handler = new StaticUiHandler(this);
 	private Disposable pingDisposable;
+	private float maxSpeed = Float.MIN_VALUE, minSpeed = Float.MAX_VALUE;
 	
 	private long lastTotalRxBytes = 0;
 	private long lastTimeStamp = 0;
@@ -52,9 +53,9 @@ public class NetActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_net);
 		
-		tv_type = findViewById(R.id.connection_type);
-		tv_now_speed = findViewById(R.id.now_speed);
-		tv_ave_speed = findViewById(R.id.ave_speed);
+		speed_max = findViewById(R.id.speed_max);
+		speed_min = findViewById(R.id.speed_min);
+		speed_ave = findViewById(R.id.speed_ave);
 		btn = findViewById(R.id.start_btn);
 		mDashboardView = findViewById(R.id.dashboard_view);
 		
@@ -103,23 +104,23 @@ public class NetActivity extends Activity {
 						if (manager != null) {
 							NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 							if (networkInfo != null) {
-								tv_type.setText(networkInfo.getTypeName());//网络类型
+								mDashboardView.setHeaderText(networkInfo.getTypeName());//网络类型
 								//btn.postDelayed(() -> btn.setText("正在测试网速..."), 500);
-								 btn.setText("正在测试网速...");
+								btn.setText("正在测试网速...");
 								new DownloadThread().start();
 							} else {
-								tv_type.setText("网络不可用");
+								mDashboardView.setHeaderText("网络不可用");
 								Toast.makeText(NetActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
 								reset();
 							}
 						} else {
-							tv_type.setText("网络不可用");
+							mDashboardView.setHeaderText("网络不可用");
 							Toast.makeText(NetActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
 							reset();
 						}
 						//不同的话说明没网
 					} else {
-						tv_type.setText("无网络");
+						mDashboardView.setHeaderText("无网络");
 						Toast.makeText(NetActivity.this, "无网络", Toast.LENGTH_SHORT).show();
 						reset();
 					}
@@ -147,8 +148,11 @@ public class NetActivity extends Activity {
 			lastTimeStamp = nowTimeStamp;
 			lastTotalRxBytes = TrafficStats.getTotalRxBytes();
 			
-			tv_now_speed.setText(PingUtils.formatData(speed) + "/S");
-			Log.i("bqt", "当前网速：" + PingUtils.formatData(speed) + "/S");
+			maxSpeed = Math.max(maxSpeed, speed);
+			minSpeed = Math.min(minSpeed, speed);
+			
+			/*speed_min.setText(PingUtils.formatData(speed) + "/S");
+			Log.i("bqt", "当前网速：" + PingUtils.formatData(speed) + "/S");*/
 			
 			mDashboardView.setRealTimeValueWithAnimation(speed * 1.0f / 1024 / 1024);
 		}
@@ -173,7 +177,9 @@ public class NetActivity extends Activity {
 						activity.showCurrentNetSpeed();
 						break;
 					case MESSAGE_WHAT_REFUSH_AVE_SPEED:
-						activity.tv_ave_speed.setText(PingUtils.formatData((int) msg.obj) + "/S");
+						activity.speed_ave.setText(PingUtils.formatData((int) msg.obj) + "/S");
+						activity.speed_max.setText(PingUtils.formatData((int) activity.maxSpeed) + "/S");
+						activity.speed_min.setText(PingUtils.formatData((int) activity.minSpeed) + "/S");
 						break;
 					case MESSAGE_WHAT_REFUSH_RESET:
 						activity.reset();

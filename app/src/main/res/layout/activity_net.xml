@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000"
         android:orientation="horizontal"
         android:paddingBottom="10dp"
         android:paddingTop="10dp">
@@ -25,16 +24,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="连接方式"
-                android:textColor="#ffffff"/>
+                android:text="最高速度"
+                android:textColor="#000"/>
 
             <TextView
-                android:id="@+id/connection_type"
+                android:id="@+id/speed_max"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:singleLine="true"
-                android:textColor="#fff"
+                android:textColor="#000"
                 tools:text="2M/S"/>
         </LinearLayout>
 
@@ -54,15 +53,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="当前速度"
-                android:textColor="#ffffff"/>
+                android:text="最低速度"
+                android:textColor="#000"/>
 
             <TextView
-                android:id="@+id/now_speed"
+                android:id="@+id/speed_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textColor="#fff"
+                android:textColor="#000"
                 tools:text="2M/S"/>
         </LinearLayout>
 
@@ -82,14 +81,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="平均速度"
-                android:textColor="#ffffff"/>
+                android:textColor="#000"/>
 
             <TextView
-                android:id="@+id/ave_speed"
+                android:id="@+id/speed_ave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textColor="#fff"
+                android:textColor="#000"
                 tools:text="2M/S"/>
         </LinearLayout>
     </LinearLayout>
