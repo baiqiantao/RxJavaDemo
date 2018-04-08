@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DecimalFormat;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -138,20 +137,6 @@ public class NetActivity extends Activity {
 		}
 	}
 	
-	/**
-	 * 格式化文件大小
-	 *
-	 * @param size 文件大小
-	 */
-	private String formatData(long size) {
-		DecimalFormat formater = new DecimalFormat("####.00");
-		if (size < 1024) return size + "B";
-		else if (size < Math.pow(1024, 2)) return formater.format(size * Math.pow(1024, -1)) + "KB";
-		else if (size < Math.pow(1024, 3)) return formater.format(size * Math.pow(1024, -2)) + "MB";
-		else if (size < Math.pow(1024, 4)) return formater.format(size * Math.pow(1024, -3)) + "GB";
-		else return "";
-	}
-	
 	private void showCurrentNetSpeed() {
 		long nowTimeStamp = System.currentTimeMillis();
 		long totalRxBytes = TrafficStats.getTotalRxBytes();
@@ -161,8 +146,8 @@ public class NetActivity extends Activity {
 			lastTimeStamp = nowTimeStamp;
 			lastTotalRxBytes = TrafficStats.getTotalRxBytes();
 			
-			tv_now_speed.setText(formatData(speed) + "/S");
-			Log.i("bqt", "当前网速：" + formatData(speed) + "/S");
+			tv_now_speed.setText(PingUtils.formatData(speed) + "/S");
+			Log.i("bqt", "当前网速：" + PingUtils.formatData(speed) + "/S");
 			
 			mDashboardView.setRealTimeValue(speed * 1.0f / 1024 / 1024);
 		}
@@ -187,7 +172,7 @@ public class NetActivity extends Activity {
 						activity.showCurrentNetSpeed();
 						break;
 					case MESSAGE_WHAT_REFUSH_AVE_SPEED:
-						activity.tv_ave_speed.setText(activity.formatData((int) msg.obj) + "/S");
+						activity.tv_ave_speed.setText(PingUtils.formatData((int) msg.obj) + "/S");
 						break;
 					case MESSAGE_WHAT_REFUSH_RESET:
 						activity.reset();
@@ -209,7 +194,7 @@ public class NetActivity extends Activity {
 			try {
 				URLConnection connection = new URL(URL_DOWNLOAD).openConnection();
 				InputStream inputStream = connection.getInputStream();
-				Log.i("bqt", "总长度：" + formatData(connection.getContentLength()));
+				Log.i("bqt", "总长度：" + PingUtils.formatData(connection.getContentLength()));
 				
 				long startTime = System.currentTimeMillis();//开始时间
 				long usedTime;//已经使用的时长
@@ -234,7 +219,7 @@ public class NetActivity extends Activity {
 							tempTime2 = System.currentTimeMillis();
 							aveSpeed = (int) (downloadLen / usedTime) * 1000;//平均网速，单位秒
 							handler.sendMessage(Message.obtain(handler, MESSAGE_WHAT_REFUSH_AVE_SPEED, aveSpeed));
-							Log.i("bqt", "平均网速：" + formatData(aveSpeed) + "/S   已下载长度：" + formatData(downloadLen));
+							Log.i("bqt", "平均网速：" + PingUtils.formatData(aveSpeed) + "/S   已下载长度：" + PingUtils.formatData(downloadLen));
 						}
 					}
 				}

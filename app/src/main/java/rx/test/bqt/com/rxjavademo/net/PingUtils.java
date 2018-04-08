@@ -5,10 +5,25 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 
 public class PingUtils {
 	public static final String BAIDU_IP = "119.75.217.109";
 	public static final String APPLE_IP = "http://captive.apple.com";
+	
+	/**
+	 * 格式化文件大小
+	 *
+	 * @param size 文件大小
+	 */
+	public static String formatData(long size) {
+		DecimalFormat formater = new DecimalFormat("####.00");
+		if (size < 1024) return size + "B";
+		else if (size < Math.pow(1024, 2)) return formater.format(size * Math.pow(1024, -1)) + "KB";
+		else if (size < Math.pow(1024, 3)) return formater.format(size * Math.pow(1024, -2)) + "MB";
+		else if (size < Math.pow(1024, 4)) return formater.format(size * Math.pow(1024, -3)) + "GB";
+		else return "";
+	}
 	
 	/**
 	 * ping返回true表示ping通，false表示没有ping通
