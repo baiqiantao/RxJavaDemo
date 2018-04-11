@@ -32,6 +32,7 @@ public class MainActivity extends ListActivity {
 				"合并：concat、concatEager、merge",
 				"定时：timer、interval、take、delay",
 				"网络监测",
+				"测试",
 				"",};
 		tv = new TextView(this);
 		tv.setTextColor(Color.BLUE);
@@ -63,6 +64,9 @@ public class MainActivity extends ListActivity {
 				break;
 			case 6:
 				startActivity(new Intent(this, NetActivity.class));
+				break;
+			case 7:
+				
 				break;
 		}
 	}

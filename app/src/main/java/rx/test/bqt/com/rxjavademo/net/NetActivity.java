@@ -78,6 +78,8 @@ public class NetActivity extends Activity {
 	 */
 	private void checkNetSpeed() {
 		flag = true;
+		maxSpeed = Float.MIN_VALUE;
+		minSpeed = Float.MAX_VALUE;
 		handler.postDelayed(this::reset, DURATION_MAXCHECK);
 		checkNetType();
 		
