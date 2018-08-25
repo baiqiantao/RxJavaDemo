@@ -16,28 +16,6 @@
     <string name="msg_pseudoCache_demoInfo_mergeOptimized">This is an optimized merge and probably want to use. Notice subscriptions happen immediately and network results are respected regardless of when they come in.  Notice though that if the disk is slower it\'s discarded in favor of the "fresh" network data which in this case happens to be faster. \n\n
     这是一个优化的合并，可能你希望使用。 通知订阅立即发生，并且网络结果受到尊重，无论它们何时进入。但请注意，如果磁盘速度较慢，则会丢弃该磁盘以支持“新鲜”网络数据，在这种情况下，该数据恰好会更快。 </string>
 
-    <string name="btn1">========================   1     ===========================</string>
-    <string name="btn_demo_schedulers">调度程序和并发\n bg work (schedulers &amp; concurrency)</string>
-    <string name="btn_demo_buffer">请求累计（缓冲区）\n accumulate calls (buffer)</string>
-    <string name="btn_demo_debounce">搜索文本监听器（去抖动）\n search text listener(debounce)</string>
-    <string name="btn_demo_retrofit">Retrofit + RxJava</string>
-    <string name="btn_demo_double_binding_textview">双重绑定\n Double binding (PublishSubject)</string>
-    <string name="btn_demo_polling">用RxJava轮询\n Polling with RxJava</string>
-
-    <string name="msg1">========================   1     ===========================</string>
-    <string name="msg_demo_concurrency_schedulers">This is a demo of how long running operations can be offloaded to a background thread. After the operation is done, we resume back on the main thread. All using RxJava! \n\n To really see this shine. Hit the button multiple times and see how the button click which is a ui operation is never blocked because the long operation only runs in the background \n\n
-        这是一个耗时操作如何卸载到后台线程的演示。 操作完成后，我们重新恢复到主线程。 全部使用RxJava！ 要想真正看到这个演示的闪光点。 请多次点击按钮，可以看到作为一个UI操作的按钮点击操作是永远不会被阻止的，因为耗时操作只放在后台运行</string>
-    <string name="msg_demo_buffer">This is a demo of how events can be accumulated using the "buffer" operation. Tap the button below repetitively and you will notice in the logs that button taps are collected over a span of 2s and printed below. \n\n
-    这是演示如何使用“缓冲区”操作来累积事件。 重复点击下面的按钮，您会注意到日志中按钮点击收集的时间跨度为2s，并打印在下方</string>
-    <string name="msg_demo_debounce">As you type in the input box, it will not shoot out log messages at every single input character change, but rather only pick the last one. \n\n
-    当你在输入框中输入内容时，它不会在每次输入字符更改时发出日志消息，而只会选择最后一个。用简单的话讲就是当N个结点发生的时间太靠近（即发生的时间差小于设定的值T），debounce就会自动过滤掉前N-1个结点。</string>
-    <string name="msg_demo_retrofit">Retrofit from Square is a super easy networking helper library. It works really well with RxJava and these are examples taken from Jake Wharton\'s talk at Netflix (see README). Really the only interesting bits here are in the code and logs. \n\n
-     它适用于RxJava，这些都是 Jake Wharton 在Netflix的演讲中提供的例子（请参阅自述文件）。 真正唯一有趣的地方在于代码和日志。</string>
-    <string name="msg_demo_doublebinding">Watch how the result gloriously auto-updates sed on your changing inputs. Using a technique like this, you could achieve the two-way binding in Angular Js, or more efficiently use a pattern like the Presentation View Model. \n\n
-    观看结果如何自动更新sed，在您更改输入时。 使用这样的技术，您可以在Angular Js中实现双向绑定，或者更高效地使用像Presentation View Model这样的模式。</string>
-    <string name="msg_demo_polling">Demo polling or making a call repeatedly with RxJava.\n\nSimple polling: Notice in the logs how a (simulated) network call is repeatedly made in the background. \n\n
-    使用RxJava反复轮询或发起请求。简单轮询：在日志中注意观察一个（模拟的）网络请求是如何在后台重复made的</string>
-
 
     <string name="btn2">========================   2     ===========================</string>
     <string name="btn_demo_form_validation_combinel">使用CombineLatest进行表单验证\n Form Validation with CombineLatest</string>

@@ -40,7 +40,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.test.bqt.com.rxjavademo.R;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -56,21 +55,24 @@ public class MainActivity1 extends ListActivity {
 		tv = new TextView(this);
 		tv.setTextColor(Color.BLUE);
 		getListView().addFooterView(tv);
-		String[] array = {getString(R.string.btn_demo_schedulers),
-				getString(R.string.btn_demo_buffer),
-				getString(R.string.btn_demo_debounce),
+		String[] array = {"调度和并发[schedulers & concurrency]",
+				"请求累计[accumulate calls]",
+				"搜索文本监听器，去抖动[debounce]",
 				
-				getString(R.string.btn_demo_retrofit),
-				getString(R.string.btn_demo_double_binding_textview),
-				getString(R.string.btn_demo_polling),};
+				"Retrofit + RxJava",
+				"双重绑定",
+				"用RxJava轮询[Polling]",};
 		
-		tipsArray = new String[]{getString(R.string.msg_demo_concurrency_schedulers),
-				getString(R.string.msg_demo_buffer),
-				getString(R.string.msg_demo_debounce),
+		tipsArray = new String[]{"这是如何将一个耗时操作转移到[offloaded to]后台线程的演示。当操作完成后，我们重新恢复到][resume back]主线程。要想真正看到这个演示的闪光点[shine]，请多次点击按钮，可以看到作为一个UI操作的按钮点击操作是永远不会被阻止的，因为耗时操作只放在后台运行",
 				
-				getString(R.string.msg_demo_retrofit),
-				getString(R.string.msg_demo_doublebinding),
-				getString(R.string.msg_demo_polling),};
+				"这是演示如何使用buffer操作来累积[accumulated]事件。 重复点击下面的按钮，您会注意到日志中按钮点击收集的时间跨度为2s",
+				
+				"当你在输入框中输入内容时，它不会在每次输入字符更改时发出[shoot out]日志消息，而只会选择最后一个。就是当N个结点发生的时间太靠近，会自动过滤掉前N-1个结点。",
+				
+				"这些是 Jake Wharton 提供的例子。 真正唯一有趣的地方在于代码和日志。",
+				
+				"观看在您更改输入时结果如何自动更新sed。使用这样的技术，您可以在Angular Js中实现双向绑定，或者更高效地使用像MVP这样的模式。",
+				"使用RxJava反复轮询或发起请求。简单轮询：在日志中注意观察一个网络请求是如何在后台重复made的",};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>(Arrays.asList(array))));
 	}
 	
@@ -80,10 +82,33 @@ public class MainActivity1 extends ListActivity {
 		tv.setText(position < tipsArray.length ? tipsArray[position] : "");
 		switch (position) {
 			case 0:
-				_0();
+				Observable.create(source -> {
+					Log.i("bqt", "create是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
+					SystemClock.sleep(3000);
+					source.onNext(System.currentTimeMillis());
+				}).map(mapper -> {
+					Log.i("bqt", "map是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
+					SystemClock.sleep(3000);
+//					String date = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS", Locale.getDefault()).format(new Date(mapper));
+					return mapper + "map后的对象";
+				})
+						.subscribeOn(Schedulers.io())
+						.observeOn(AndroidSchedulers.mainThread())
+						.subscribe(consumer -> {
+							Log.i("bqt", "subscribe是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//true
+							Log.i("bqt", "subscribe中收到的值：" + consumer);
+						});
 				break;
 			case 1:
-				_1(v);
+				Observable.just(true, "你好", 20094)
+						.map(object -> {
+							Log.i("bqt", "map是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
+							SystemClock.sleep(1000);
+							return object;
+						})
+						.subscribeOn(Schedulers.io())
+						.observeOn(AndroidSchedulers.mainThread())
+						.subscribe(object -> Log.i("bqt", "subscribe2中收到的值：" + object));
 				break;
 			case 2:
 				_2();
@@ -108,38 +133,6 @@ public class MainActivity1 extends ListActivity {
 		}
 		if (compositeDisposable != null) {
 			compositeDisposable.clear();
-		}
-	}
-	
-	private void _0() {
-		//简化版1
-		if (_counter % 2 == 0) {
-			disposable = Observable.create(emitter -> {
-				Log.i("bqt", "create是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
-				SystemClock.sleep(3000);
-				emitter.onNext(new Random().nextBoolean());
-			}).map(b -> {
-				Log.i("bqt", "map是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
-				SystemClock.sleep(3000);
-				return b + "---";
-			})
-					.subscribeOn(Schedulers.io())
-					.observeOn(AndroidSchedulers.mainThread())
-					.subscribe(b -> {
-						Log.i("bqt", "subscribe中收到的值：" + b);
-						Log.i("bqt", "subscribe是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//true
-					});
-		} else {
-			//简化版2
-			disposable = Observable.just(true, "你好", 20094)
-					.map(object -> {
-						Log.i("bqt", "map2是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
-						SystemClock.sleep(1000);
-						return object;
-					})
-					.subscribeOn(Schedulers.io())
-					.observeOn(AndroidSchedulers.mainThread())
-					.subscribe(object -> Log.i("bqt", "subscribe2中收到的值：" + object));
 		}
 	}
 	

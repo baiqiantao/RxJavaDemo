@@ -1,19 +1,19 @@
 package rx.test.bqt.com.rxjavademo.rx.rxbus;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import rx.test.bqt.com.rxjavademo.R;
 
-public class RxBusActivity extends AppCompatActivity {
+public class RxBusActivity extends Activity {
 	private RxBus rxBus = null;
 	
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rxbus);
-		getSupportFragmentManager().beginTransaction()
+		getFragmentManager().beginTransaction()
 				.replace(R.id.rxbus_frag_top, new RxBusTopFragment())
 				.replace(R.id.rxbus_frag_bottom, new RxBusBottomFragment())
 				.commit();

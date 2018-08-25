@@ -12,7 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import rx.test.bqt.com.rxjavademo.net.NetActivity;
 import rx.test.bqt.com.rxjavademo.rx.ConcatActivity;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity1;
 import rx.test.bqt.com.rxjavademo.rx.MainActivity2;
@@ -23,6 +22,7 @@ import rx.test.bqt.com.rxjavademo.rx.rxbus.RxBusActivity;
 public class MainActivity extends ListActivity {
 	private TextView tv;
 	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		String[] array = {"create、just、map、subscribeOn、observeOn、subscribe、buffer、rxbinding2(RxTextView)、debounce、filter、interval、take、Retrofit系列",
@@ -63,10 +63,12 @@ public class MainActivity extends ListActivity {
 				startActivity(new Intent(this, TimingActivity.class));
 				break;
 			case 6:
-				startActivity(new Intent(this, NetActivity.class));
+	
 				break;
 			case 7:
 				
+				break;
+			default:
 				break;
 		}
 	}
