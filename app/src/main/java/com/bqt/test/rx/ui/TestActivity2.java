@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package com.bqt.test.rx.ui;
 
 import android.app.ListActivity;
 import android.graphics.Color;
@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bqt.test.rx.R;
+import com.bqt.test.rx.othre.RetryWithDelay;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.text.SimpleDateFormat;
@@ -36,9 +38,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
-import rx.test.bqt.com.rxjavademo.R;
 
-public class MainActivity2 extends ListActivity {
+public class TestActivity2 extends ListActivity {
 	private TextView tvTips;
 	private String[] tipsArray;
 	private Disposable disposable;

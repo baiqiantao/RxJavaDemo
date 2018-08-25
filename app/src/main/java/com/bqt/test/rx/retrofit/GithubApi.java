@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package com.bqt.test.rx.retrofit;
 
 import java.util.List;
 
@@ -19,22 +19,4 @@ public interface GithubApi {
 	
 	@GET("users/{user}")
 	User getUser(@Path("user") String user);
-}
-
-class Contributor {
-	public String login;
-	public long contributions;
-	
-	public Contributor() {
-	}
-	
-	public Contributor(String login, long contributions) {
-		this.login = login;
-		this.contributions = contributions;
-	}
-}
-
-class User {
-	public String name;
-	public String email;
 }

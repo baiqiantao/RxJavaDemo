@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package com.bqt.test.rx.ui;
 
 import android.app.ListActivity;
 import android.graphics.Color;
@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bqt.test.rx.R;
+import com.bqt.test.rx.retrofit.Contributor;
+import com.bqt.test.rx.retrofit.GithubApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -31,7 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.test.bqt.com.rxjavademo.R;
+
 
 public class ConcatActivity extends ListActivity {
 	private TextView tv;

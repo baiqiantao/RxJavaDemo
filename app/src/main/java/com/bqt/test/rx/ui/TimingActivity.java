@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package com.bqt.test.rx.ui;
 
 import android.app.ListActivity;
 import android.graphics.Color;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.bqt.test.rx.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
-import rx.test.bqt.com.rxjavademo.R;
 
 public class TimingActivity extends ListActivity {
 	private TextView tvTips;

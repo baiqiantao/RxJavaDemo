@@ -1,10 +1,10 @@
-package rx.test.bqt.com.rxjavademo.rx.rxbus;
+package com.bqt.test.rx.rxbus;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import rx.test.bqt.com.rxjavademo.R;
+import com.bqt.test.rx.R;
 
 public class RxBusActivity extends Activity {
 	private RxBus rxBus = null;

@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx.rxbus;
+package com.bqt.test.rx.rxbus;
 
 import android.app.Fragment;
 import android.graphics.Color;

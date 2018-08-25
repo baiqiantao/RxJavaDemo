@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package com.bqt.test.rx.othre;
 
 import android.util.Log;
 

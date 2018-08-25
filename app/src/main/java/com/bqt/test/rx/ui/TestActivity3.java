@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package com.bqt.test.rx.ui;
 
 import android.app.ListActivity;
 import android.graphics.Color;
@@ -8,14 +8,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bqt.test.rx.R;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import rx.test.bqt.com.rxjavademo.R;
 
-public class MainActivity3 extends ListActivity {
+public class TestActivity3 extends ListActivity {
 	private TextView tv;
 	private String[] tipsArray;
 	private Disposable disposable;

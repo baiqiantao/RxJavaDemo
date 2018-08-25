@@ -1,4 +1,4 @@
-package rx.test.bqt.com.rxjavademo.rx;
+package com.bqt.test.rx.ui;
 
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
@@ -16,6 +16,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bqt.test.rx.retrofit.Contributor;
+import com.bqt.test.rx.retrofit.GithubApi;
+import com.bqt.test.rx.retrofit.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -43,7 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.text.TextUtils.isEmpty;
 
-public class MainActivity1 extends ListActivity {
+public class TestActivity1 extends ListActivity {
 	private TextView tv;
 	private String[] tipsArray;
 	private Disposable disposable;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="rx.test.bqt.com.rxjavademo">
+          package="com.bqt.test.rx">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -24,12 +24,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".rx.MainActivity1"/>
-        <activity android:name=".rx.MainActivity2"/>
-        <activity android:name=".rx.MainActivity3"/>
-        <activity android:name=".rx.rxbus.RxBusActivity"/>
-        <activity android:name=".rx.ConcatActivity"/>
-        <activity android:name=".rx.TimingActivity"/>
+        <activity android:name=".ui.TestActivity1"/>
+        <activity android:name=".ui.TestActivity2"/>
+        <activity android:name=".ui.TestActivity3"/>
+        <activity android:name=".rxbus.RxBusActivity"/>
+        <activity android:name=".ui.ConcatActivity"/>
+        <activity android:name=".ui.TimingActivity"/>
+        <activity android:name=".observer.SimpleActivity"/>
     </application>
 
 </manifest>
