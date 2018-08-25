@@ -30,7 +30,8 @@
         <activity android:name=".rxbus.RxBusActivity"/>
         <activity android:name=".ui.ConcatActivity"/>
         <activity android:name=".ui.TimingActivity"/>
-        <activity android:name=".observer.SimpleActivity"/>
+        <activity android:name=".simple.SimpleActivity"/>
+        <activity android:name=".simple.SimpleActivity2"/>
     </application>
 
 </manifest>

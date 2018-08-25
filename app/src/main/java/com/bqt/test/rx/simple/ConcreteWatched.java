@@ -1,4 +1,4 @@
-package com.bqt.test.rx.observer;
+package com.bqt.test.rx.simple;
 
 import android.util.Log;
 
