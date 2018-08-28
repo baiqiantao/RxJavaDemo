@@ -19,11 +19,15 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class SimpleActivity2 extends ListActivity {
+	
+	private static final DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS", Locale.getDefault());
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,10 +36,10 @@ public class SimpleActivity2 extends ListActivity {
 				"map 操作符基本用法简化形式",
 				"flatMap 操作符基本用法",
 				"flatMap 操作符基本用法简化形式",
-				"flatMap 基本用法2",
-				"flatMap 基本用法3",
+				"flatMap 操作符基本用法2",
 				"本示例中使用 flatMap 没有任何意义",
-				"concatMap 和 flatMap 的区别",
+				"flatMap 实现多个网络请求依次依赖",
+				"flatMap 实现多个网络请求依次依赖-简化代码",
 		};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 	}
@@ -82,78 +86,74 @@ public class SimpleActivity2 extends ListActivity {
 						.flatMap(Observable::fromIterable)
 						.subscribe(string -> Log.i("bqt", "【接收到的内容】" + string));
 				break;
-			case 5:
-				long parameter = System.currentTimeMillis();
-				Log.i("bqt", "开始请求网络，参数：" + FORMAT.format(new Date(parameter)));
-				getObservable1(parameter)
-						.observeOn(AndroidSchedulers.mainThread())
-						.flatMap(string -> getObservable2(string, 1000 * 60))
-						.observeOn(AndroidSchedulers.mainThread())
-						.subscribe(string -> {
-							long time = (System.currentTimeMillis() - parameter) / 1000;
-							Log.i("bqt", "响应结果：" + string + "：" + isMainThread() + "，耗时：" + time + " 秒");//true，5 秒
-						});
-				break;
-			case 6://本示例中 map 和 flatMap 没有任何区别，在这种情况下就应该用 map，用 flatMap 的都是傻叉、垃圾、装逼犯
+			case 5://本示例中 map 和 flatMap 没有任何区别，在这种情况下就应该用 map，用 flatMap 的都是傻叉、垃圾、装逼犯
 				Observable.just(1).map(i -> "1-值为" + i).subscribe(s -> Log.i("bqt", s));
 				Observable.just(1).map(i -> "2-值为" + i).flatMap(Observable::just).subscribe(s -> Log.i("bqt", s));
 				Observable.just(1).flatMap(i -> Observable.just("3-值为" + i)).subscribe(s -> Log.i("bqt", s));
 				Observable.just(1).flatMap(i -> Observable.just("4-值为" + i)).map(s -> s).subscribe(s -> Log.i("bqt", s));
 				break;
+			case 6:
+				long parameter = System.currentTimeMillis();
+				Log.i("bqt", "开始请求网络，参数：" + parameter + "，" + FORMAT.format(new Date(parameter)));
+				getObservable1(parameter)
+						.subscribeOn(Schedulers.io()) // 在io线程进行网络请求
+						.observeOn(AndroidSchedulers.mainThread()) // 在主线程处理请求结果
+						.doOnNext(response -> Log.i("bqt", "第一个网络请求结束，" + response + "，" + isMainThread()))//true
+						.observeOn(Schedulers.io()) // 回到 io 线程去处理下一个网络请求
+						.flatMap(string -> getObservable2(string, 1000 * 60))
+						.observeOn(AndroidSchedulers.mainThread()) // 在主线程处理请求结果
+						.doOnNext(response -> Log.i("bqt", "第二个网络请求结束，" + response + "，" + isMainThread()))//true
+						.subscribe(string -> {
+							long time = (System.currentTimeMillis() - parameter) / 1000;
+							Log.i("bqt", "响应结果：" + string + "：" + isMainThread() + "，耗时：" + time + " 秒");//true，5 秒
+						});
+				break;
 			case 7:
-				final long start1 = System.currentTimeMillis();
-				Observable.just(Arrays.asList("篮球", "足球", "排球"), Arrays.asList("画画", "跳舞"))
-						.flatMap(list -> Observable.fromIterable(list).delay(list.size() * 1000, TimeUnit.MILLISECONDS))
-						.subscribe((string -> Log.i("bqt", "【flatMap后接收到的内容】" + string)), throwable -> {
-						}, () -> {
-							long time = (System.currentTimeMillis() - start1) / 1000;//flatMap是无序的
-							Log.i("bqt", "flatMap历时 " + time + " 秒"); //3秒
-						});
-				
-				final long start2 = System.currentTimeMillis();
-				Log.i("bqt", "两者相隔时间为 " + (start2 - start1) + " 毫秒"); //14 毫秒左右，说明 delay 是异步的
-				Observable.just(Arrays.asList("篮球", "足球", "排球"), Arrays.asList("画画", "跳舞"))
-						.concatMap(list -> Observable.fromIterable(list).delay(list.size() * 1000, TimeUnit.MILLISECONDS))
-						.subscribe((string -> Log.i("bqt", "【concatMap后接收到的内容】" + string)), throwable -> {
-						}, () -> {
-							long time = (System.currentTimeMillis() - start1) / 1000;//concatMap是有序的
-							Log.i("bqt", "concatMap历时 " + time + " 秒");//5秒
-						});
+				String input = "原始值：" + FORMAT.format(new Date(System.currentTimeMillis()));
+				Observable.create((ObservableOnSubscribe<String>) emitter -> {
+					SystemClock.sleep(2000);//模拟网络请求
+					emitter.onNext(input + "，第一次修改：" + FORMAT.format(new Date(System.currentTimeMillis())));
+					emitter.onComplete();
+				}).subscribeOn(Schedulers.io())
+						.observeOn(Schedulers.io())
+						.flatMap(string -> Observable.create((ObservableOnSubscribe<String>) emitter -> {
+							SystemClock.sleep(3000);//模拟网络请求
+							emitter.onNext(string + "，第二次修改：" + FORMAT.format(new Date(System.currentTimeMillis())));
+							emitter.onComplete();
+						})).observeOn(AndroidSchedulers.mainThread())
+						.subscribe(string -> Log.i("bqt", string + "，结果：" + FORMAT.format(new Date(System.currentTimeMillis()))));
 				break;
 		}
 	}
 	
-	private boolean isMainThread() {
-		return Looper.myLooper() == Looper.getMainLooper();
-	}
-	
-	private static final DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS", Locale.getDefault());
-	
 	private Observable<String> getObservable1(long parameter) {
-		return Observable.create(emitter -> new Thread(() -> {
-			Log.i("bqt", "第一个网络请求参数：" + parameter);
+		return Observable.create(emitter -> {
+			Log.i("bqt", "第一个网络请求参数：" + parameter + "，" + isMainThread());//false
 			SystemClock.sleep(2000);//模拟网络请求
 			String response = FORMAT.format(new Date(parameter));
-			Log.i("bqt", "第一个网络请求响应：" + response);
+			Log.i("bqt", "第一个网络请求响应：" + response + "，" + isMainThread());//false
 			emitter.onNext(response);
 			emitter.onComplete();
-		}).start());
+		});
 	}
 	
 	private Observable<String> getObservable2(String parameter, long dealy) {
-		return Observable.create(emitter -> new Thread(() -> {
+		return Observable.create(emitter -> {
 			try {
-				Log.i("bqt", "第二个网络请求参数：" + parameter);
+				Log.i("bqt", "第二个网络请求参数：" + parameter + "，" + isMainThread());//false
 				SystemClock.sleep(3000);//模拟网络请求
-				Date data = new Date(FORMAT.parse(parameter).getTime() + dealy);
-				String response = FORMAT.format(data);
-				Log.i("bqt", "第二个网络请求响应：" + response);
+				String response = FORMAT.format(new Date(FORMAT.parse(parameter).getTime() + dealy));
+				Log.i("bqt", "第二个网络请求响应：" + response + "，" + isMainThread());//false
 				emitter.onNext(response);
 				emitter.onComplete();
 			} catch (ParseException e) {
 				e.printStackTrace();
 				emitter.onError(e);
 			}
-		}).start());
+		});
+	}
+	
+	private boolean isMainThread() {
+		return Looper.myLooper() == Looper.getMainLooper();
 	}
 }

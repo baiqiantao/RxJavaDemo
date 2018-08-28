@@ -30,8 +30,11 @@
         <activity android:name=".rxbus.RxBusActivity"/>
         <activity android:name=".ui.ConcatActivity"/>
         <activity android:name=".ui.TimingActivity"/>
-        <activity android:name=".simple.SimpleActivity"/>
+        <activity android:name=".simple.SimpleActivity1"/>
         <activity android:name=".simple.SimpleActivity2"/>
+        <activity android:name=".simple.SimpleActivity4"/>
+        <activity android:name=".simple.SimpleActivity3"/>
+        <activity android:name=".othre.LubanActivity"/>
     </application>
 
 </manifest>

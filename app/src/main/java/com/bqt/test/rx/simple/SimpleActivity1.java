@@ -18,7 +18,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class SimpleActivity extends ListActivity {
+public class SimpleActivity1 extends ListActivity {
 	private Watcher watcher;
 	private Watched watched;
 	private Disposable disposable;

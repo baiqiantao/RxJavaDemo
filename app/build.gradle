@@ -37,4 +37,6 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttpVersion}"
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+
+    implementation 'top.zibin:Luban:1.1.8'
 }
