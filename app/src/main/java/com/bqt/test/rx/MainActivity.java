@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.bqt.test.rx.othre.LubanActivity;
+import com.bqt.test.rx.othre.RxPermissionsActivity;
 import com.bqt.test.rx.simple.SimpleActivity1;
 import com.bqt.test.rx.simple.SimpleActivity2;
 import com.bqt.test.rx.simple.SimpleActivity3;
@@ -25,7 +26,7 @@ public class MainActivity extends ListActivity {
 				"2、常用的几个操作符：concatMap、concat、zip",
 				"3、",
 				"4、Luban 图片压缩",
-				"",
+				"5、RxPermissions 动态权限申请",
 				"create、just、map、subscribeOn、observeOn、subscribe、buffer、rxbinding2(RxTextView)、debounce、filter、interval、take、Retrofit系列",
 				"combineLatest、timeout、error、retryWhen、range、extensions(MathFlowable)",
 				"3",
@@ -55,6 +56,9 @@ public class MainActivity extends ListActivity {
 				break;
 			case 4:
 				startActivity(new Intent(this, LubanActivity.class));
+				break;
+			case 5:
+				startActivity(new Intent(this, RxPermissionsActivity.class));
 				break;
 //			case 2:
 //				startActivity(new Intent(this, TestActivity2.class));

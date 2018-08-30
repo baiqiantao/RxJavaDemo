@@ -3,9 +3,12 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.bqt.test.rx">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
 
     <application
         android:name=".App"
@@ -35,6 +38,8 @@
         <activity android:name=".simple.SimpleActivity4"/>
         <activity android:name=".simple.SimpleActivity3"/>
         <activity android:name=".othre.LubanActivity"/>
+        <activity android:name=".othre.RxPermissionsActivity"/>
+        <activity android:name=".othre.RxPermissionsFragmentActivity"/>
     </application>
 
 </manifest>
