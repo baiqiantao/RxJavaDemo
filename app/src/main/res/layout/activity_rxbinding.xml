@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#3000"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="点击事件"
+        android:textColor="#00f"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher_background"/>
+
+    <EditText
+        android:id="@+id/et_phone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:digits=".0123456789"
+        android:hint="请输入手机号"
+        android:inputType="phone"
+        android:textColorHint="#ccc"
+        android:textSize="18sp"/>
+
+    <EditText
+        android:id="@+id/et_psd"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:digits=".0123456789"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        android:textColorHint="#ccc"
+        android:textSize="18sp"/>
+
+    <CheckBox
+        android:id="@+id/cb_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#3f00"/>
+
+    <ListView
+        android:id="@+id/lv_users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

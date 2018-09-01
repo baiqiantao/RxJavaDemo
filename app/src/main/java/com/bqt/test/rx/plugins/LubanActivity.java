@@ -1,4 +1,4 @@
-package com.bqt.test.rx.othre;
+package com.bqt.test.rx.plugins;
 
 import android.app.ListActivity;
 import android.os.Bundle;

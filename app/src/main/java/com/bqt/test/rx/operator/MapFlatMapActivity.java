@@ -1,4 +1,4 @@
-package com.bqt.test.rx.simple;
+package com.bqt.test.rx.operator;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.bqt.test.rx.observer.Person;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -25,7 +27,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class SimpleActivity2 extends ListActivity {
+public class MapFlatMapActivity extends ListActivity {
 	
 	private static final DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS", Locale.getDefault());
 	
@@ -39,7 +41,8 @@ public class SimpleActivity2 extends ListActivity {
 				"flatMap 操作符基本用法2",
 				"本示例中使用 flatMap 没有任何意义",
 				"flatMap 实现多个网络请求依次依赖",
-				"flatMap 实现多个网络请求依次依赖-简化代码",
+				"flatMap 实现多个网络请求依次依赖-简化1",
+				"flatMap 实现多个网络请求依次依赖-简化2",
 		};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 	}
@@ -51,17 +54,16 @@ public class SimpleActivity2 extends ListActivity {
 				Observable.just(System.currentTimeMillis())
 						.map(new Function<Long, String>() { //泛型分别表示：发送的原始数据类型，转换后新的数据类型
 							@Override
-							public String apply(Long time) {
-								//操作符 Operators 在消息发送者 Observable(被观察者) 和 消息消费者Subscriber(观察者) 之间起到操纵消息的作用
-								return new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault()).format(new Date(time));
+							public String apply(Long time) { //操作符在消息发送者 和 消息消费者  之间起到操纵消息的作用
+								return FORMAT.format(new Date(time));
 							}
 						})
 						.subscribe(string -> Log.i("bqt", string));//发送的是 Long 类型，接收的是 String 类型
 				break;
 			case 1:
 				Observable.just(System.currentTimeMillis())
-						.map(time -> time + 1000 * 60 * 60 * 24)//时间加一天
-						.map(time -> new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault()).format(new Date(time)))
+						.map(time -> time + 1000 * 60 * 60 * 24)//改变时间的值
+						.map(time -> FORMAT.format(new Date(time)))//转换时间格式
 						.subscribe(string -> Log.i("bqt", string));
 				break;
 			case 2:
@@ -86,11 +88,11 @@ public class SimpleActivity2 extends ListActivity {
 						.flatMap(Observable::fromIterable)
 						.subscribe(string -> Log.i("bqt", "【接收到的内容】" + string));
 				break;
-			case 5://本示例中 map 和 flatMap 没有任何区别，在这种情况下就应该用 map，用 flatMap 的都是傻叉、垃圾、装逼犯
-				Observable.just(1).map(i -> "1-值为" + i).subscribe(s -> Log.i("bqt", s));
-				Observable.just(1).map(i -> "2-值为" + i).flatMap(Observable::just).subscribe(s -> Log.i("bqt", s));
-				Observable.just(1).flatMap(i -> Observable.just("3-值为" + i)).subscribe(s -> Log.i("bqt", s));
-				Observable.just(1).flatMap(i -> Observable.just("4-值为" + i)).map(s -> s).subscribe(s -> Log.i("bqt", s));
+			case 5://本示例中 map 和 flatMap 没有任何区别，在这种情况下就应该用 map，用 flatMap 的都是傻叉、垃圾、装逼货
+				Observable.just(1).map(i -> "值为" + i).subscribe(s -> Log.i("bqt", s));//标准用法
+				Observable.just(2).map(i -> "值为" + i).flatMap(Observable::just).subscribe(s -> Log.i("bqt", s));
+				Observable.just(3).flatMap(i -> Observable.just("值为" + i)).subscribe(s -> Log.i("bqt", s));
+				Observable.just(4).flatMap(i -> Observable.just("值为" + i)).map(s -> s).subscribe(s -> Log.i("bqt", s));
 				break;
 			case 6:
 				long parameter = System.currentTimeMillis();
@@ -100,7 +102,7 @@ public class SimpleActivity2 extends ListActivity {
 						.observeOn(AndroidSchedulers.mainThread()) // 在主线程处理请求结果
 						.doOnNext(response -> Log.i("bqt", "第一个网络请求结束，" + response + "，" + isMainThread()))//true
 						.observeOn(Schedulers.io()) // 回到 io 线程去处理下一个网络请求
-						.flatMap(string -> getObservable2(string, 1000 * 60))
+						.flatMap(string -> getObservable2(string, 1000 * 60))//实现多个网络请求依次依赖的【核心代码】
 						.observeOn(AndroidSchedulers.mainThread()) // 在主线程处理请求结果
 						.doOnNext(response -> Log.i("bqt", "第二个网络请求结束，" + response + "，" + isMainThread()))//true
 						.subscribe(string -> {
@@ -109,19 +111,25 @@ public class SimpleActivity2 extends ListActivity {
 						});
 				break;
 			case 7:
-				String input = "原始值：" + FORMAT.format(new Date(System.currentTimeMillis()));
+				getObservable1(System.currentTimeMillis())
+						.flatMap(string -> getObservable2(string, 1000 * 60))//实现多个网络请求依次依赖的【核心代码】
+						.subscribeOn(Schedulers.io()) // 在io线程进行网络请求
+						.observeOn(AndroidSchedulers.mainThread()) // 在主线程处理请求结果
+						.subscribe(string -> Log.i("bqt", "响应结果：" + string + "：" + isMainThread()));
+				break;
+			case 8:
+				String input = "开始时间：" + currentTime();
 				Observable.create((ObservableOnSubscribe<String>) emitter -> {
 					SystemClock.sleep(2000);//模拟网络请求
-					emitter.onNext(input + "，第一次修改：" + FORMAT.format(new Date(System.currentTimeMillis())));
+					emitter.onNext(input + "，第一个网络请求完成时间：" + currentTime());
 					emitter.onComplete();
-				}).subscribeOn(Schedulers.io())
-						.observeOn(Schedulers.io())
-						.flatMap(string -> Observable.create((ObservableOnSubscribe<String>) emitter -> {
-							SystemClock.sleep(3000);//模拟网络请求
-							emitter.onNext(string + "，第二次修改：" + FORMAT.format(new Date(System.currentTimeMillis())));
-							emitter.onComplete();
-						})).observeOn(AndroidSchedulers.mainThread())
-						.subscribe(string -> Log.i("bqt", string + "，结果：" + FORMAT.format(new Date(System.currentTimeMillis()))));
+				}).flatMap(string -> Observable.create((ObservableOnSubscribe<String>) emitter -> { //【核心代码】
+					SystemClock.sleep(3000);//模拟网络请求
+					emitter.onNext(string + "，第二个网络请求完成时间：" + currentTime());
+					emitter.onComplete();
+				})).subscribeOn(Schedulers.io()) // 在io线程进行网络请求
+						.observeOn(AndroidSchedulers.mainThread()) // 在主线程处理请求结果
+						.subscribe(string -> Log.i("bqt", string + "，最终完成时间：" + currentTime()));
 				break;
 		}
 	}
@@ -155,5 +163,10 @@ public class SimpleActivity2 extends ListActivity {
 	
 	private boolean isMainThread() {
 		return Looper.myLooper() == Looper.getMainLooper();
+	}
+	
+	private String currentTime() {
+		String time = new SimpleDateFormat("HH:mm:ss SSS", Locale.getDefault()).format(new Date(System.currentTimeMillis()));
+		return time + "(" + isMainThread() + ")";
 	}
 }

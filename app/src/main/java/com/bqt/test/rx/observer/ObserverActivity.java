@@ -1,4 +1,4 @@
-package com.bqt.test.rx.simple;
+package com.bqt.test.rx.observer;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class SimpleActivity1 extends ListActivity {
+public class ObserverActivity extends ListActivity {
 	private Watcher watcher;
 	private Watched watched;
 	private Disposable disposable;
@@ -60,7 +60,7 @@ public class SimpleActivity1 extends ListActivity {
 						if (new Random().nextBoolean()) emitter.onComplete();
 						else emitter.onError(new Throwable("异常啦"));
 						
-						emitter.onNext("onComplete 或 onError 后 emitter 就被废弃了，再调用其方法就没有任何意义了");
+						emitter.onNext("调用 onComplete 或 onError 后就取消订阅了，再调用其方法就没有任何意义了");
 						Log.i("bqt", "调用 onComplete 或 onError 后 isDisposed=" + emitter.isDisposed());//true
 					}
 				});
@@ -92,41 +92,39 @@ public class SimpleActivity1 extends ListActivity {
 				Observable.create((ObservableOnSubscribe<String>) emitter -> {
 					emitter.onNext("救命啊");
 					emitter.onComplete();
-				})
-						.subscribe(new Observer<String>() {
-							@Override
-							public void onSubscribe(Disposable d) {
-								Log.i("bqt", "【被观察者成功订阅了此观察者】onSubscribe");
-							}
-							
-							@Override
-							public void onNext(String s) {
-								Log.i("bqt", "【观察者收到被观察者的消息】onNext:" + s);
-							}
-							
-							@Override
-							public void onError(Throwable e) {
-								Log.i("bqt", "onError:" + e.getMessage());
-							}
-							
-							@Override
-							public void onComplete() {
-								Log.i("bqt", "【整个流程已经结束】onComplete");
-							}
-						});
+				}).subscribe(new Observer<String>() {
+					@Override
+					public void onSubscribe(Disposable d) {
+						Log.i("bqt", "【被观察者成功订阅了此观察者】onSubscribe");
+					}
+					
+					@Override
+					public void onNext(String s) {
+						Log.i("bqt", "【观察者收到被观察者的消息】onNext:" + s);
+					}
+					
+					@Override
+					public void onError(Throwable e) {
+						Log.i("bqt", "onError:" + e.getMessage());
+					}
+					
+					@Override
+					public void onComplete() {
+						Log.i("bqt", "【整个流程已经结束】onComplete");
+					}
+				});
 				break;
 			case 5:
 				disposable = Observable.just("救命啊") //顺序：onNext()，onError，onComplete，onSubscribe
 						.subscribe(s -> Log.i("bqt", "【观察者收到被观察者的消息】onNext:" + s),
 								e -> Log.i("bqt", "onError:" + e.getMessage()),
 								() -> Log.i("bqt", "【整个流程已经结束】onComplete"), //只有 onComplete 用的是 Action
-								d -> Log.i("bqt", "【被观察者成功订阅了此观察者】onSubscribe"));
-				Log.i("bqt", "isDisposed=" + disposable.isDisposed());//true
+								d -> Log.i("bqt", "【被观察者成功订阅了此观察者】onSubscribe" + "，isDisposed:" + d.isDisposed()));
 				break;
 			case 6:
 				disposable = Observable.just("救命啊")
 						.subscribe(s -> Log.i("bqt", "【观察者收到被观察者的消息】onNext:" + s));
-				Log.i("bqt", "isDisposed=" + disposable.isDisposed());//true
+				Log.i("bqt", "isDisposed=" + disposable.isDisposed());//true，默认是同步执行的，当执行到这里时事件流已经结束了
 				break;
 			case 7:
 				disposable = Observable.just("救命啊", 10086, true, 1.5f, new Person("包青天", 28)) //被观察者【发出消息】
@@ -135,14 +133,23 @@ public class SimpleActivity1 extends ListActivity {
 							SystemClock.sleep(1000);
 							Log.i("bqt", "【观察者收到被观察者的消息】onNext:" + s); //观察者收到后【处理消息】
 						});
-				Log.i("bqt", "isDisposed=" + disposable.isDisposed());//false
+				Log.i("bqt", "isDisposed=" + disposable.isDisposed());//false，异步执行时，当执行到这里时事件流还没有结束
 				break;
 			case 8:
 				if (disposable != null) {
-					disposable.dispose();//调用后，被观察者中还没发送的消息会被取消掉，不管有没有 isDisposed 都可以调用
+					Log.i("bqt", "isDisposed=" + disposable.isDisposed());//false 或 true
+					disposable.dispose();//不管有没有 isDisposed 都可以调用 dispose
 					Log.i("bqt", "isDisposed=" + disposable.isDisposed());//true
 				}
 				break;
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (disposable != null) {
+			disposable.dispose();
 		}
 	}
 }

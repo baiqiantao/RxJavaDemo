@@ -33,13 +33,14 @@
         <activity android:name=".rxbus.RxBusActivity"/>
         <activity android:name=".ui.ConcatActivity"/>
         <activity android:name=".ui.TimingActivity"/>
-        <activity android:name=".simple.SimpleActivity1"/>
-        <activity android:name=".simple.SimpleActivity2"/>
-        <activity android:name=".simple.SimpleActivity4"/>
-        <activity android:name=".simple.SimpleActivity3"/>
-        <activity android:name=".othre.LubanActivity"/>
-        <activity android:name=".othre.RxPermissionsActivity"/>
-        <activity android:name=".othre.RxPermissionsFragmentActivity"/>
+        <activity android:name=".observer.ObserverActivity"/>
+        <activity android:name=".operator.MapFlatMapActivity"/>
+        <activity android:name=".operator.SimpleActivity4"/>
+        <activity android:name=".operator.SimpleActivity3"/>
+        <activity android:name=".plugins.LubanActivity"/>
+        <activity android:name=".plugins.RxPermissionsActivity"/>
+        <activity android:name=".plugins.RxPermissionsFragmentActivity"/>
+        <activity android:name=".plugins.RxBindingActivity"/>
     </application>
 
 </manifest>

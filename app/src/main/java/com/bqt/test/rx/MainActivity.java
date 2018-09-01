@@ -7,12 +7,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.bqt.test.rx.othre.LubanActivity;
-import com.bqt.test.rx.othre.RxPermissionsActivity;
-import com.bqt.test.rx.simple.SimpleActivity1;
-import com.bqt.test.rx.simple.SimpleActivity2;
-import com.bqt.test.rx.simple.SimpleActivity3;
-import com.bqt.test.rx.simple.SimpleActivity4;
+import com.bqt.test.rx.observer.ObserverActivity;
+import com.bqt.test.rx.operator.MapFlatMapActivity;
+import com.bqt.test.rx.operator.SimpleActivity3;
+import com.bqt.test.rx.operator.SimpleActivity4;
+import com.bqt.test.rx.plugins.LubanActivity;
+import com.bqt.test.rx.plugins.RxBindingActivity;
+import com.bqt.test.rx.plugins.RxPermissionsActivity;
 
 import java.util.Arrays;
 
@@ -27,6 +28,7 @@ public class MainActivity extends ListActivity {
 				"3、",
 				"4、Luban 图片压缩",
 				"5、RxPermissions 动态权限申请",
+				"6、RxBinding",
 				"create、just、map、subscribeOn、observeOn、subscribe、buffer、rxbinding2(RxTextView)、debounce、filter、interval、take、Retrofit系列",
 				"combineLatest、timeout、error、retryWhen、range、extensions(MathFlowable)",
 				"3",
@@ -43,10 +45,10 @@ public class MainActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		switch (position) {
 			case 0:
-				startActivity(new Intent(this, SimpleActivity1.class));
+				startActivity(new Intent(this, ObserverActivity.class));
 				break;
 			case 1:
-				startActivity(new Intent(this, SimpleActivity2.class));
+				startActivity(new Intent(this, MapFlatMapActivity.class));
 				break;
 			case 2:
 				startActivity(new Intent(this, SimpleActivity3.class));
@@ -59,6 +61,9 @@ public class MainActivity extends ListActivity {
 				break;
 			case 5:
 				startActivity(new Intent(this, RxPermissionsActivity.class));
+				break;
+			case 6:
+				startActivity(new Intent(this, RxBindingActivity.class));
 				break;
 //			case 2:
 //				startActivity(new Intent(this, TestActivity2.class));

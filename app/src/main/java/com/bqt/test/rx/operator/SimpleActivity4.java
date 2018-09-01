@@ -1,4 +1,4 @@
-package com.bqt.test.rx.simple;
+package com.bqt.test.rx.operator;
 
 import android.app.ListActivity;
 import android.os.Bundle;

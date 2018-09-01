@@ -1,4 +1,4 @@
-package com.bqt.test.rx.othre;
+package com.bqt.test.rx.operator;
 
 import android.util.Log;
 

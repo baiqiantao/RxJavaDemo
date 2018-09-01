@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bqt.test.rx.R;
-import com.bqt.test.rx.othre.RetryWithDelay;
+import com.bqt.test.rx.operator.RetryWithDelay;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.text.SimpleDateFormat;
