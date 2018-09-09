@@ -52,22 +52,24 @@ public class RxBindingActivity extends Activity {
 		lv_users.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(ARRAY)));
 		
 		simple();
+		accept();
 		useless();
 		powerful();
 	}
 	
 	private void simple() {
-		//以下是几个并没有什么卵用的 api，这几种情况除非是用于在 rx 中作为辅助操作，否则还不如直接使用原生的 setOn***Listener 呢
 		RxView.clicks(tv_name).subscribe(o -> toast("点击事件"));
 		RxView.longClicks(iv_icon).subscribe(o -> toast("长点击事件"));
-		RxCompoundButton.checkedChanges(cb_agree).subscribe(isChecked -> toast(isChecked ? "选中" : "取消选中"));
 		RxAdapterView.itemClicks(lv_users).subscribe(position -> toast("点击了 " + position));
+		RxCompoundButton.checkedChanges(cb_agree).subscribe(isChecked -> toast(isChecked ? "选中" : "取消选中"));
 		
-		RxTextView.textChanges(et_phone).subscribe(this::toast); //内部封装了TextWatcher监听，这个还算简化了一点点
+		RxTextView.textChanges(et_phone).subscribe(this::toast); //内部封装了TextWatcher监听
 		RxTextView.textChangeEvents(et_psd).subscribe(event -> toast(event.text())); //返回 TextViewTextChangeEvent
 		RxTextView.editorActions(et_phone).subscribe(actionId -> toast("" + actionId));//EditorInfo.IME_ACTION_DONE=6
 		RxTextView.editorActionEvents(et_psd).subscribe(event -> toast("" + event.actionId()));//TextViewEditorActionEvent
-		
+	}
+	
+	private void accept() {
 		try {
 			RxView.visibility(tv_name).accept(true);
 			RxView.visibility(iv_icon, View.GONE).accept(true);
@@ -84,11 +86,10 @@ public class RxBindingActivity extends Activity {
 	}
 	
 	private void useless() {
-		//以下是一些奇葩的 api，不知道有没有人用过
-		RxView.draws(cb_agree).subscribe(o -> toast("绘制监听")); //没用
-		RxView.drags(tv_name).subscribe(dragEvent -> toast("拖拽监听")); //没用
+		RxView.draws(cb_agree).subscribe(o -> toast("绘制监听"));
+		RxView.drags(tv_name).subscribe(dragEvent -> toast("拖拽监听"));
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			RxView.scrollChangeEvents(lv_users).subscribe(scrollChangeEvent -> toast("滑动监听")); //没用
+			RxView.scrollChangeEvents(lv_users).subscribe(scrollChangeEvent -> toast("滑动监听"));
 		}
 	}
 	
