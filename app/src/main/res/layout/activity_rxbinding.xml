@@ -1,45 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_name"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#3000"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="点击事件"
-        android:textColor="#00f"
-        android:textSize="20sp"/>
-
-    <ImageView
-        android:id="@+id/iv_icon"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_background"/>
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/et_phone"
+        <ImageView
+            android:id="@+id/iv1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon"/>
+
+        <ImageView
+            android:id="@+id/iv2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <ImageView
+            android:id="@+id/iv3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/icon"/>
+
+        <ImageView
+            android:id="@+id/iv4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_launcher_background"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:digits=".0123456789"
-        android:hint="请输入手机号"
-        android:inputType="phone"
-        android:textColorHint="#ccc"
-        android:textSize="18sp"/>
+        android:orientation="horizontal"
+        tools:ignore="TextFields">
 
-    <EditText
-        android:id="@+id/et_psd"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:digits=".0123456789"
-        android:hint="请输入密码"
-        android:inputType="textPassword"
-        android:textColorHint="#ccc"
-        android:textSize="18sp"/>
+        <EditText
+            android:id="@+id/et_account"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/et_psd"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/et_mail"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
 
     <CheckBox
         android:id="@+id/cb_agree"
