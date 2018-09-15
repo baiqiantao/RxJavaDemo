@@ -1,90 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iv1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:src="@drawable/icon"/>
 
         <ImageView
             android:id="@+id/iv2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/ic_launcher_background"/>
+            android:background="#f00"/>
 
         <ImageView
             android:id="@+id/iv3"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icon"/>
+            android:background="#0f0"/>
 
         <ImageView
             android:id="@+id/iv4"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/ic_launcher_background"/>
+            android:background="#00f"/>
+
+        <ImageView
+            android:id="@+id/iv5"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:background="#000"/>
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        tools:ignore="TextFields">
+        android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/et_account"
+            android:id="@+id/et1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:hint="et1"
+            android:inputType="text"/>
 
         <EditText
-            android:id="@+id/et_phone"
+            android:id="@+id/et2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:hint="et2"
+            android:imeOptions="actionDone"
+            android:inputType="phone"/>
 
         <EditText
-            android:id="@+id/et_psd"
+            android:id="@+id/et3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-        <EditText
-            android:id="@+id/et_mail"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
+            android:layout_weight="1"
+            android:hint="et3"
+            android:imeOptions="actionSearch"
+            android:inputType="textPassword"/>
     </LinearLayout>
 
-
-    <CheckBox
-        android:id="@+id/cb_agree"
+    <Button
+        android:id="@+id/btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#3f00"/>
+        android:text="点击获取验证码"
+        android:textSize="12sp"/>
+
+    <CheckBox
+        android:id="@+id/cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#300f"
+        android:checked="true"
+        android:text="已阅读并同意用户协议"/>
 
     <ListView
-        android:id="@+id/lv_users"
+        android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -1,41 +1,45 @@
 package com.bqt.test.rx.plugins;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.bqt.test.rx.R;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.view.RxViewGroup;
+import com.jakewharton.rxbinding2.widget.RxAbsListView;
+import com.jakewharton.rxbinding2.widget.RxAdapter;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class RxBindingActivity extends FragmentActivity {
-	public CompositeDisposable compositeDisposable;
-	private static final String[] ARRAY = {"包青天", "白乾涛", "baiqiantao", "bqt"};
-	private ImageView iv1, iv2, iv3, iv4;
-	private EditText et_account, et_phone, et_psd, et_mail, et_name;
-	private CheckBox cb_agree;
-	private ListView lv_users;
+public class RxBindingActivity extends RxFragmentActivity {
+	private static final String[] ARRAY = {"包青天", "白乾涛", "baiqiantao", "bqt", "RxBinding", "RxView", "1", "2", "3", "4", "5",};
+	private ImageView iv1, iv2, iv3, iv4, iv5;
+	private EditText et1, et2, et3;
+	private Button btn;
+	private CheckBox cb;
+	private ListView listView;
+	private int type;
 	
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,107 +50,156 @@ public class RxBindingActivity extends FragmentActivity {
 		iv2 = findViewById(R.id.iv2);
 		iv3 = findViewById(R.id.iv3);
 		iv4 = findViewById(R.id.iv4);
-		et_account = findViewById(R.id.et_account);
-		et_phone = findViewById(R.id.et_phone);
-		et_psd = findViewById(R.id.et_psd);
-		et_mail = findViewById(R.id.et_mail);
-		et_name = findViewById(R.id.et_name);
-		cb_agree = findViewById(R.id.cb_agree);
-		lv_users = findViewById(R.id.lv_users);
-		lv_users.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(ARRAY)));
+		iv5 = findViewById(R.id.iv5);
+		btn = findViewById(R.id.btn);
+		et1 = findViewById(R.id.et1);
+		et2 = findViewById(R.id.et2);
+		et3 = findViewById(R.id.et3);
+		cb = findViewById(R.id.cb);
+		listView = findViewById(R.id.lv);
+		listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(ARRAY)));
 		
-		switch (getIntent().getIntExtra("type", 0)) {
+		type = getIntent().getIntExtra("type", 0);
+		log("type=" + type);
+		switch (type) {
 			case 0:
-				simple();
+				event();
 				break;
 			case 1:
 				accept();
 				break;
 			case 2:
-				useless();
+				usefulDemo();
 				break;
-			case 3:
-				powerful();
-				break;
-			default:
-				break;
+			
 		}
 	}
 	
-	private void simple() {
-		RxView.clicks(iv1).subscribe(o -> toast("点击事件"));
-		RxView.longClicks(iv2).subscribe(o -> toast("长点击事件"));
-		RxAdapterView.itemClicks(lv_users).subscribe(position -> toast("点击了 " + position));
-		RxCompoundButton.checkedChanges(cb_agree).subscribe(isChecked -> toast(isChecked ? "选中" : "取消选中"));
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (type == 3) {
+			bufferDemo();
+		}
+	}
+	
+	@SuppressLint("NewApi")
+	private void event() {
+		RxView.attaches(iv1).subscribe(o -> log("attach event"));
+		RxView.attachEvents(iv1).subscribe(viewAttachEvent -> log("attach event"));
+		RxView.clicks(iv1).subscribe(o -> log("click event")); //setOnClickListener
+		RxView.detaches(iv1).subscribe(o -> log("detach event"));
+		RxView.drags(listView).subscribe(dragEvent -> log("drag event:" + dragEvent.getAction())); //setOnDragListener
+		RxView.draws(listView).subscribe(o -> log("draw event")); // ViewTreeObserver#addOnDrawListener
+		RxView.focusChanges(iv1).subscribe(hasFocus -> log("focus change event:" + hasFocus)); //setOnFocusChangeListener
+		RxView.globalLayouts(listView).subscribe(o -> log("global event")); //ViewTreeObserver#addOnGlobalLayoutListener
+		RxView.hovers(iv1).subscribe(motionEvent -> log("hover event:" + motionEvent.getAction())); //setOnHoverListene，悬停事件
+		RxView.keys(iv1).subscribe(keyEvent -> log("key event:" + keyEvent.getAction())); //setOnKeyListener
+		RxView.layoutChanges(listView).subscribe(o -> log("layout event")); //addOnLayoutChangeListener
+		RxView.layoutChangeEvents(listView).subscribe(viewLayoutChangeEvent -> log("layout event"));//addOnLayoutChangeListener
+		RxView.longClicks(iv1).subscribe(o -> log("long click event")); //setOnLongClickListener
+		RxView.scrollChangeEvents(listView).subscribe(viewScrollChangeEvent -> log("scroll event")); //setOnScrollChangeListener
+		RxView.systemUiVisibilityChanges(listView).subscribe(vii -> log("visible event" + vii)); //setOnSystemUiVisibilityChangeListener
+		RxView.touches(listView).subscribe(motionEvent -> { //setOnTouchListener
+			log("touch event:" + motionEvent.getAction());
+			listView.onTouchEvent(motionEvent);//如果不传给listView，则listView将不能获取到Touch事件，那么listView会出现不能滑动等问题
+		});
 		
-		RxTextView.textChanges(et_account).subscribe(this::toast); //内部封装了TextWatcher监听
-		RxTextView.textChangeEvents(et_phone).subscribe(event -> toast(event.text())); //返回 TextViewTextChangeEvent
-		RxTextView.afterTextChangeEvents(et_psd).subscribe(event -> toast(event.view().getText()));//TextViewAfterTextChangeEvent
-		RxTextView.editorActions(et_mail).subscribe(actionId -> toast("" + actionId));//EditorInfo.IME_ACTION_DONE=6
-		RxTextView.editorActionEvents(et_name).subscribe(event -> toast("" + event.actionId()));//TextViewEditorActionEvent
+		RxAdapterView.itemClicks(listView).subscribe(position -> log("item click event:" + position)); //setOnItemClickListener
+		RxAdapterView.itemClickEvents(listView).subscribe(adapterViewItemClickEvent -> log("item click event")); //点击
+		RxAdapterView.itemLongClicks(listView).subscribe(position -> log("item long click event:" + position)); //setOnItemLongClickListener
+		RxAdapterView.itemLongClickEvents(listView).subscribe(adapterViewItemLongClickEvent -> log("item long click event")); //长点击
+		RxAdapterView.itemSelections(listView).subscribe(position -> log("item select event:" + position)); //setOnItemSelectedListener
+		RxAdapterView.selectionEvents(listView).subscribe(adapterViewSelectionEvent -> log("item select event")); //选择
+		
+		RxAdapter.dataChanges(listView.getAdapter()).subscribe(listAdapter -> log("data change event"));//registerDataSetObserver
+		RxAbsListView.scrollEvents(listView).subscribe(absListViewScrollEvent -> log("scroll event")); //setOnScrollListener
+		RxViewGroup.changeEvents(listView).subscribe(viewGroupHierarchyChangeEvent -> log("哈"));//setOnHierarchyChangeListener
+		
+		RxCompoundButton.checkedChanges(cb).subscribe(isChecked -> log("check event:" + isChecked)); //setOnCheckedChangeListener
+		
+		RxTextView.textChanges(et1).subscribe(cs -> log("text change event:" + cs.toString())); //addTextChangedListener
+		RxTextView.textChangeEvents(et2).subscribe(textViewTextChangeEvent -> log("text change event")); //addTextChangedListener
+		RxTextView.afterTextChangeEvents(et3).subscribe(textViewAfterTextChangeEvent -> log("aftet text change event"));
+		RxTextView.beforeTextChangeEvents(et3).subscribe(textViewBeforeTextChangeEvent -> log("before text change event"));
+		RxTextView.editorActions(et1).subscribe(actionId -> log("editor event:" + actionId)); //setOnEditorActionListener，需要设置inputType
+		RxTextView.editorActionEvents(et2).subscribe(textViewEditorActionEvent -> log("editor event")); //点击软键盘上的回车键
 	}
 	
 	private void accept() {
 		try {
-			RxView.clicks(iv1).subscribe(o -> RxView.visibility(iv1).accept(true));
-			RxView.clicks(iv1).subscribe(o -> RxView.visibility(iv2, View.GONE).accept(true));
+			RxView.visibility(iv1).accept(false);//view.setVisibility(value ? View.VISIBLE : View.GONE)
+			RxView.visibility(iv2, View.GONE).accept(true);//view.setVisibility(value ? View.VISIBLE : visibilityWhenFalse)
+			RxView.visibility(iv3, View.GONE).accept(false);
+			RxView.visibility(iv4, View.INVISIBLE).accept(false);
+			RxView.visibility(iv5, View.INVISIBLE).accept(true);
 			
-			RxCompoundButton.checked(cb_agree).accept(true);
-			RxCompoundButton.toggle(cb_agree).accept(null); //.toggle() 等价于 setChecked(!mChecked)
+			RxAdapterView.selection(listView).accept(1); //view.setSelection(position)
 			
-			RxTextView.text(et_phone).accept("重新设置的值");
-			RxTextView.hint(et_psd).accept("重新设置的值");
-			RxTextView.color(et_phone).accept(Color.parseColor("#00ff00"));
+			RxCompoundButton.checked(cb).accept(true); //view.setChecked(value)
+			RxCompoundButton.toggle(cb).accept(null); //view.toggle()，切换状态
+			
+			RxTextView.color(et1).accept(Color.RED); //view.setTextColor(color)
+			RxTextView.textRes(et1).accept(R.string.app_name); //view.setText(int resId)
+			RxTextView.hintRes(et2).accept(R.string.app_name); //view.setHint(int resId)
+			RxTextView.errorRes(et3).accept(R.string.app_name); //view.setError(int resId)
+			RxTextView.text(et1).accept("text"); //view.setText(String text)
+			RxTextView.hint(et2).accept("hint"); //view.setHint(String text)
+			RxTextView.error(et3).accept("error"); //view.setError(String text)
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void useless() {
-		RxView.draws(cb_agree).subscribe(o -> toast("绘制监听"));
-		RxView.drags(cb_agree).subscribe(dragEvent -> toast("拖拽监听"));
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			RxView.scrollChangeEvents(lv_users).subscribe(scrollChangeEvent -> toast("滑动监听"));
-		}
-	}
-	
-	private void powerful() {
+	private void usefulDemo() {
 		RxView.clicks(iv1)
 				.throttleFirst(2, TimeUnit.SECONDS) //throttleFirst只响应第一次，throttleLast只响应最后一次
-				.subscribe(o -> toast("防抖动"));
+				.subscribe(o -> log("防抖动"));
 		
 		RxView.clicks(iv2)
-				.compose(new RxPermissions(this).ensure(Manifest.permission.CAMERA)) //动态权限
-				.subscribe(granted -> Toast.makeText(this, granted ? "已赋予权限" : "已拒绝权限", Toast.LENGTH_SHORT).show());
+				.compose(new RxPermissions(this).ensure(Manifest.permission.CAMERA)) //动态获取权限
+				.subscribe(granted -> log(granted ? "已赋予权限" : "已拒绝权限"));
 		
-		RxView.clicks(iv3)
-				.buffer(800, TimeUnit.MILLISECONDS, 5) //连击
-				.subscribe(list -> toast(list.size() + "连击：" + list.toString()));
-		
-		RxTextView.textChanges(et_phone)
+		RxTextView.textChanges(et1)
 				.debounce(500, TimeUnit.MILLISECONDS) //防抖动，控件操作时间间隔，去除发送频率过快的项
-				.subscribe(this::toast);
+				.subscribe(charSequence -> log(charSequence.toString()));
 		
-		Observable.combineLatest(RxTextView.textChanges(et_phone), RxTextView.textChanges(et_psd),  //合并监听、表单验证
-				(phone, psd) -> phone + "--" + psd)
-				.subscribe(this::toast);
+		Observable<CharSequence> observable1 = RxTextView.textChanges(et2).skip(1);
+		Observable<CharSequence> observable2 = RxTextView.textChanges(et3).skip(1);
+		Observable.combineLatest(observable1, observable2,  //合并监听、表单验证
+				(phone, password) -> {
+					log(phone + "_" + password);
+					return phone.toString().startsWith("1") && password.toString().endsWith("1");
+				}).subscribe(isValid -> btn.setEnabled(isValid));
+		
+		RxView.clicks(btn) //发送验证码功能
+				.doOnNext(o -> btn.setEnabled(false))
+				.subscribe(o -> Observable.interval(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+						.take(10)
+						.compose(bindToLifecycle())
+						.map(aLong -> 10 - aLong + " 秒后重新获取")
+						.subscribe(string -> btn.setText(string),
+								Throwable::printStackTrace,
+								() -> {
+									btn.setEnabled(true);
+									btn.setText("重新获取");
+								}));
 	}
 	
-	private void toast(CharSequence charSequence) {
-		Toast.makeText(this, charSequence, Toast.LENGTH_SHORT).show();
-		Log.i("bqt", charSequence == null ? "null" : charSequence.toString());
+	private void bufferDemo() {
+		RxView.clicks(iv1)
+				.buffer(1000, TimeUnit.MILLISECONDS, 5) //效果仅仅是，每隔1秒钟收集一下此1秒钟内的点击次数
+				.compose(bindUntilEvent(ActivityEvent.STOP))//在 onStop 时取消
+				.subscribe(list -> Log.i("【bqt】", "一秒钟内的点击次数：" + list.size()));
+		
+		//这种效果可能不是你想要的效果，你想要的效果可能是：在1秒钟内点击次数为多少次就是几次连击
+		Observable<Object> observable = RxView.clicks(iv2).share();
+		observable.buffer(observable.debounce(200, TimeUnit.MILLISECONDS)
+				.compose(bindUntilEvent(ActivityEvent.STOP)))
+				.subscribe(list -> Log.i("【bqt】", "连续点击次数：" + list.size()));//这里的时间指的是任意两次点击最长间隔时间);
 	}
 	
-	public void addDisposable(Disposable disposable) {
-		if (compositeDisposable == null) compositeDisposable = new CompositeDisposable();
-		compositeDisposable.add(disposable);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		if (compositeDisposable != null) {
-			compositeDisposable.clear();
-		}
+	private void log(String s) {
+		Log.i("【bqt】", s);
 	}
 }

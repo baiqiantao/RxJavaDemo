@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.bqt.test.rx.observer.ObserverActivity;
+import com.bqt.test.rx.operator.FlatMapConcatMapActivity;
 import com.bqt.test.rx.operator.MapFlatMapActivity;
-import com.bqt.test.rx.operator.SimpleActivity3;
 import com.bqt.test.rx.operator.SimpleActivity4;
 import com.bqt.test.rx.plugins.LubanActivity;
 import com.bqt.test.rx.plugins.RxBindingActivity;
@@ -24,11 +24,12 @@ public class MainActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		String[] array = {"0、传统的观察者模式和使用 rx 写的观察者模式",
 				"1、最常用的两个操作符：map、flatMap",
-				"2、常用的几个操作符：concatMap、concat、zip",
-				"3、",
+				"2、操作符：concatMap、concat、zip",
+				"3、操作符：",
 				"4、Luban 图片压缩",
 				"5、RxPermissions 动态权限申请",
 				"6、RxBinding",
+				
 				"create、just、map、subscribeOn、observeOn、subscribe、buffer、rxbinding2(RxTextView)、debounce、filter、interval、take、Retrofit系列",
 				"combineLatest、timeout、error、retryWhen、range、extensions(MathFlowable)",
 				"3",
@@ -41,6 +42,8 @@ public class MainActivity extends ListActivity {
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 	}
 	
+	private int type = 0;
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		switch (position) {
@@ -51,7 +54,7 @@ public class MainActivity extends ListActivity {
 				startActivity(new Intent(this, MapFlatMapActivity.class));
 				break;
 			case 2:
-				startActivity(new Intent(this, SimpleActivity3.class));
+				startActivity(new Intent(this, FlatMapConcatMapActivity.class));
 				break;
 			case 3:
 				startActivity(new Intent(this, SimpleActivity4.class));
@@ -63,7 +66,9 @@ public class MainActivity extends ListActivity {
 				startActivity(new Intent(this, RxPermissionsActivity.class));
 				break;
 			case 6:
-				startActivity(new Intent(this, RxBindingActivity.class));
+				Intent intent = new Intent(this, RxBindingActivity.class);
+				intent.putExtra("type", (type++) % 4);
+				startActivity(intent);
 				break;
 //			case 2:
 //				startActivity(new Intent(this, TestActivity2.class));

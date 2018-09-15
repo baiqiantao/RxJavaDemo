@@ -42,4 +42,5 @@ dependencies {
     implementation 'top.zibin:Luban:1.1.8'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
+    implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.2'
 }
