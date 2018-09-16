@@ -3,22 +3,21 @@ package com.bqt.test.rx.operator;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-public class SimpleActivity4 extends ListActivity {
-	private static final DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS", Locale.getDefault());
+public class Operator2Activity extends ListActivity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		String[] array = {"",
+		String[] array = {"delay、delaySubscription",
 				"",
 				"",
 				"",
@@ -27,17 +26,19 @@ public class SimpleActivity4 extends ListActivity {
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 	}
 	
+	private int i = -1;
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+		i++;
 		switch (position) {
 			case 0:
-
+				
 				break;
 			case 1:
-
 				break;
 			case 2:
-
+				
 				break;
 			case 3:
 				
@@ -50,12 +51,9 @@ public class SimpleActivity4 extends ListActivity {
 				break;
 		}
 	}
-	
-	private boolean isMainThread() {
-		return Looper.myLooper() == Looper.getMainLooper();
-	}
-	
-	private String currentData() {
-		return FORMAT.format(new Date(System.currentTimeMillis()));
+
+	private void log(String s) {
+		String date = new SimpleDateFormat("HH:mm:ss SSS", Locale.getDefault()).format(new Date());
+		Log.i("【bqt】", s + "，" + date + "，" + (Looper.myLooper() == Looper.getMainLooper()));
 	}
 }

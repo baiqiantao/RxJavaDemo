@@ -21,7 +21,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
@@ -119,15 +118,16 @@ public class MapFlatMapActivity extends ListActivity {
 				break;
 			case 8:
 				String input = "开始时间：" + currentTime();
-				Observable.create((ObservableOnSubscribe<String>) emitter -> {
+				Observable.create(emitter -> {
 					SystemClock.sleep(2000);//模拟网络请求
 					emitter.onNext(input + "，第一个网络请求完成时间：" + currentTime());
 					emitter.onComplete();
-				}).flatMap(string -> Observable.create((ObservableOnSubscribe<String>) emitter -> { //【核心代码】
+				}).flatMap(string -> Observable.create(emitter -> { //【核心代码】
 					SystemClock.sleep(3000);//模拟网络请求
 					emitter.onNext(string + "，第二个网络请求完成时间：" + currentTime());
 					emitter.onComplete();
-				})).subscribeOn(Schedulers.io()) // 在io线程进行网络请求
+				}))
+						.subscribeOn(Schedulers.io()) // 在io线程进行网络请求
 						.observeOn(AndroidSchedulers.mainThread()) // 在主线程处理请求结果
 						.subscribe(string -> Log.i("bqt", string + "，最终完成时间：" + currentTime()));
 				break;
