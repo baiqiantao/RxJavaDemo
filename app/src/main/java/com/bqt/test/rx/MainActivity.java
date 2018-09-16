@@ -24,7 +24,7 @@ public class MainActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		String[] array = {"0、传统的观察者模式和使用 rx 写的观察者模式",
 				"1、最常用的两个操作符：map、flatMap",
-				"2、操作符：delay、delaySubscription、flatMap、concatMap、concat、zip",
+				"2、操作符：delay、delaySubscription、merge、concat、flatMap、concatMap、zip",
 				"3、操作符：",
 				"4、Luban 图片压缩",
 				"5、RxPermissions 动态权限申请",
