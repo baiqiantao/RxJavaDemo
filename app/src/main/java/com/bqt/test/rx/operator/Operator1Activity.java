@@ -30,7 +30,8 @@ public class Operator1Activity extends ListActivity {
 				"merge",
 				"concat",
 				"flatMap、concatMap",
-				"",
+				"flatMap",
+				"zip",
 				"",};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 	}
@@ -56,7 +57,10 @@ public class Operator1Activity extends ListActivity {
 				flatMapConcatMap();
 				break;
 			case 5:
-				
+				flatMap();
+				break;
+			case 6:
+				zip();
 				break;
 		}
 	}
@@ -131,6 +135,44 @@ public class Operator1Activity extends ListActivity {
 				.concatMap(list -> Observable.fromIterable(list).delay(list.size(), TimeUnit.SECONDS))//concatMap是有序的
 				.subscribe(s -> log("concatMap:" + s), e -> log(""), () -> log("concatMap:onComplet")); //5秒
 		log("结束");
+	}
+	
+	private void flatMap() {
+		long start = System.currentTimeMillis();
+		Observable.just("包青天").delay(1000, TimeUnit.MILLISECONDS)
+				.flatMap(s -> Observable.just(s + "，男").delay(1000, TimeUnit.MILLISECONDS))
+				.flatMap(s -> Observable.just(s + "，28岁").delay(1000, TimeUnit.MILLISECONDS))
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(s -> log(s + "，耗时:" + (System.currentTimeMillis() - start) + "毫秒"));
+	}
+	
+	private void zip() {
+		long start = System.currentTimeMillis();
+		Observable<String> observable1 = Observable.just("包青天").delay(1500, TimeUnit.MILLISECONDS);//模拟网络请求
+		Observable<Integer> observable2 = Observable.just(28).delay(500, TimeUnit.MILLISECONDS);
+		Observable<String[]> observable3 = Observable.just(new String[]{"香蕉", "茄子"}).delay(1000, TimeUnit.MILLISECONDS);
+		Observable.zip(observable1, observable2, observable3, MyZipBean::new)//(name, age, favors) -> new MyZipBean(name, age, favors)
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(myZipBean -> log(myZipBean.toString() + "，耗时:" + (System.currentTimeMillis() - start) + "毫秒"));
+	}
+	
+	class MyZipBean {
+		String name;
+		int age;
+		String[] favors;
+		
+		MyZipBean(String name, int age, String[] favors) {
+			this.name = name;
+			this.age = age;
+			this.favors = favors;
+		}
+		
+		@Override
+		public String toString() {
+			return name + "，" + age + "，" + Arrays.toString(favors);
+		}
 	}
 	
 	private void log(String s) {

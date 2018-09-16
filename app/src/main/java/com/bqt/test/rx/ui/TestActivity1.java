@@ -1,20 +1,14 @@
 package com.bqt.test.rx.ui;
 
-import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.SystemClock;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bqt.test.rx.retrofit.Contributor;
 import com.bqt.test.rx.retrofit.GithubApi;
@@ -22,21 +16,15 @@ import com.bqt.test.rx.retrofit.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.jakewharton.rxbinding2.view.RxView;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -85,45 +73,22 @@ public class TestActivity1 extends ListActivity {
 		tv.setText(position < tipsArray.length ? tipsArray[position] : "");
 		switch (position) {
 			case 0:
-				Observable.create(source -> {
-					Log.i("bqt", "create是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
-					SystemClock.sleep(3000);
-					source.onNext(System.currentTimeMillis());
-				}).map(mapper -> {
-					Log.i("bqt", "map是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
-					SystemClock.sleep(3000);
-//					String date = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS", Locale.getDefault()).format(new Date(mapper));
-					return mapper + "map后的对象";
-				})
-						.subscribeOn(Schedulers.io())
-						.observeOn(AndroidSchedulers.mainThread())
-						.subscribe(consumer -> {
-							Log.i("bqt", "subscribe是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//true
-							Log.i("bqt", "subscribe中收到的值：" + consumer);
-						});
+
 				break;
 			case 1:
-				Observable.just(true, "你好", 20094)
-						.map(object -> {
-							Log.i("bqt", "map是否执行在主线程：" + (Looper.myLooper() == Looper.getMainLooper()));//false
-							SystemClock.sleep(1000);
-							return object;
-						})
-						.subscribeOn(Schedulers.io())
-						.observeOn(AndroidSchedulers.mainThread())
-						.subscribe(object -> Log.i("bqt", "subscribe2中收到的值：" + object));
+
 				break;
 			case 2:
-				_2();
+
 				break;
 			case 3:
 				_3();
 				break;
 			case 4:
-				_4();
+
 				break;
 			case 5:
-				_5();
+
 				break;
 		}
 	}
@@ -137,51 +102,6 @@ public class TestActivity1 extends ListActivity {
 		if (compositeDisposable != null) {
 			compositeDisposable.clear();
 		}
-	}
-	
-	@SuppressLint("CheckResult")
-	private void _1(View v) {
-		disposable = RxView.clicks(v)
-				.map(notification -> {
-					Log.i("bqt", "接收到一次点击：" + notification.getClass());//com.jakewharton.rxbinding2.internal.Notification
-					return 1;
-				})
-				.buffer(2, TimeUnit.SECONDS)
-				.observeOn(AndroidSchedulers.mainThread())
-				//.subscribe(integers -> Log.i("bqt", "2秒内接收到的点击事件个数：" + integers.size()));
-				//如果有异常但没有重写onError方法捕获异常则会直接崩溃：OnErrorNotImplementedException
-				.subscribeWith(new DisposableObserver<List<Integer>>() {
-					@Override
-					public void onComplete() {
-						Log.i("bqt", "onComplete");
-					}
-					
-					@Override
-					public void onError(Throwable e) {
-						Log.i("bqt", "onError");
-					}
-					
-					@Override
-					public void onNext(List<Integer> integers) {
-						Log.i("bqt", "2秒内接收到的点击事件个数：" + integers.size());
-					}
-				});
-	}
-	
-	private void _2() {
-		EditText editText = new EditText(this);
-		editText.setHint("会在停止输入后的500ms后判断内容是否有改变");
-		getListView().addFooterView(editText);
-		disposable = RxTextView.textChangeEvents(editText)
-				.debounce(500, TimeUnit.MILLISECONDS) //会在停止输入后的500ms后判断是否有改变
-				.filter(textChangeEvent -> {
-					String text = textChangeEvent.text().toString();
-					Log.i("bqt", "改变后的内容：" + text + "   " + textChangeEvent.getClass());
-					return !TextUtils.isEmpty(text);//过滤掉空字符串
-				})
-				.map(textChangeEvent -> textChangeEvent.text().toString())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(text -> Log.i("bqt", "最新内容为：" + text));
 	}
 	
 	private void _3() {
@@ -242,22 +162,5 @@ public class TestActivity1 extends ListActivity {
 		compositeDisposable = new CompositeDisposable();
 		compositeDisposable.add(disposable);
 	}
-	
-	private void _4() {
-		Toast.makeText(this, "没研究", Toast.LENGTH_SHORT).show();
-	}
-	
-	private void _5() {
-		disposable = Flowable.interval(0, 1000, TimeUnit.MILLISECONDS)//初始延迟，间隔，单位
-				.map(attempt -> {
-					long time = 1000 + 1000 * new Random().nextInt(5);
-					SystemClock.sleep(time);
-					return String.format("已完成第 %s 次轮询，耗时：%s ms", attempt, time);
-				})
-				.take(5)//轮询次数
-				.doOnSubscribe(subscription -> Log.i("bqt", "【doOnSubscribe】" + subscription.getClass()))
-				.subscribe(taskName -> Log.i("bqt", "【subscribe】" + taskName));
-		compositeDisposable = new CompositeDisposable();
-		compositeDisposable.add(disposable);
-	}
+
 }

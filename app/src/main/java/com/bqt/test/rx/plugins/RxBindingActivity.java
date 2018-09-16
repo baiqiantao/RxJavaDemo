@@ -190,13 +190,18 @@ public class RxBindingActivity extends RxFragmentActivity {
 		RxView.clicks(iv1)
 				.buffer(1000, TimeUnit.MILLISECONDS, 5) //效果仅仅是，每隔1秒钟收集一下此1秒钟内的点击次数
 				.compose(bindUntilEvent(ActivityEvent.STOP))//在 onStop 时取消
-				.subscribe(list -> Log.i("【bqt】", "一秒钟内的点击次数：" + list.size()));
+				.subscribe(list -> Log.i("【bqt】", "iv1一秒钟内的点击次数：" + list.size()));
+		
+		RxView.clicks(iv2)
+				.map(obj -> 1) //和上面的情况基本一致
+				.buffer(1000, TimeUnit.MILLISECONDS)
+				.compose(bindUntilEvent(ActivityEvent.STOP))
+				.subscribe(list -> Log.i("【bqt】", "iv2一秒钟内的点击次数：" + list.size()));
 		
 		//这种效果可能不是你想要的效果，你想要的效果可能是：在1秒钟内点击次数为多少次就是几次连击
-		Observable<Object> observable = RxView.clicks(iv2).share();
-		observable.buffer(observable.debounce(200, TimeUnit.MILLISECONDS)
-				.compose(bindUntilEvent(ActivityEvent.STOP)))
-				.subscribe(list -> Log.i("【bqt】", "连续点击次数：" + list.size()));//这里的时间指的是任意两次点击最长间隔时间);
+		Observable<Object> observable = RxView.clicks(iv3).share();
+		observable.buffer(observable.debounce(200, TimeUnit.MILLISECONDS).compose(bindUntilEvent(ActivityEvent.STOP)))
+				.subscribe(list -> Log.i("【bqt】", "iv3连续点击次数：" + list.size()));//这里的时间指的是任意两次点击最长间隔时间);
 	}
 	
 	private void log(String s) {

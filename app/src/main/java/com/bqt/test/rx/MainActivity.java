@@ -30,7 +30,7 @@ public class MainActivity extends ListActivity {
 				"5、RxPermissions 动态权限申请",
 				"6、RxBinding",
 				
-				"create、just、map、subscribeOn、observeOn、subscribe、buffer、rxbinding2(RxTextView)、debounce、filter、interval、take、Retrofit系列",
+				"Retrofit系列",
 				"combineLatest、timeout、error、retryWhen、range、extensions(MathFlowable)",
 				"3",
 				"RxBus",
