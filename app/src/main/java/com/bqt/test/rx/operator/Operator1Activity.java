@@ -12,7 +12,6 @@ import android.widget.ListView;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +28,6 @@ public class Operator1Activity extends ListActivity {
 				"merge、concat",
 				"merge",
 				"concat",
-				"flatMap、concatMap",
-				"flatMap",
 				"zip",
 				"",};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
@@ -54,10 +51,10 @@ public class Operator1Activity extends ListActivity {
 				concat();
 				break;
 			case 4:
-				flatMapConcatMap();
+
 				break;
 			case 5:
-				flatMap();
+
 				break;
 			case 6:
 				zip();
@@ -121,32 +118,7 @@ public class Operator1Activity extends ListActivity {
 			emitter.onComplete();
 		});
 	}
-	
-	private void flatMapConcatMap() {
-		log("开始");
-		List<String> list1 = Arrays.asList("【1】", "【2】", "【3】");
-		List<String> list2 = Arrays.asList("【4】", "【5】");
-		
-		Observable.just(list1, list2)
-				.flatMap(list -> Observable.fromIterable(list).delay(list.size(), TimeUnit.SECONDS))//flatMap是无序的
-				.subscribe((s -> log("flatMap:" + s)), e -> log(""), () -> log("flatMap:onComplet")); //3秒
-		
-		Observable.just(list1, list2)
-				.concatMap(list -> Observable.fromIterable(list).delay(list.size(), TimeUnit.SECONDS))//concatMap是有序的
-				.subscribe(s -> log("concatMap:" + s), e -> log(""), () -> log("concatMap:onComplet")); //5秒
-		log("结束");
-	}
-	
-	private void flatMap() {
-		long start = System.currentTimeMillis();
-		Observable.just("包青天").delay(1000, TimeUnit.MILLISECONDS)
-				.flatMap(s -> Observable.just(s + "，男").delay(1000, TimeUnit.MILLISECONDS))
-				.flatMap(s -> Observable.just(s + "，28岁").delay(1000, TimeUnit.MILLISECONDS))
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(s -> log(s + "，耗时:" + (System.currentTimeMillis() - start) + "毫秒"));
-	}
-	
+
 	private void zip() {
 		long start = System.currentTimeMillis();
 		Observable<String> observable1 = Observable.just("包青天").delay(1500, TimeUnit.MILLISECONDS);//模拟网络请求
