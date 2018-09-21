@@ -33,7 +33,8 @@ public class CreateOperatorActivity extends ListActivity {
 				"timer",
 				"interval、intervalRange",
 				"range、rangeLong",
-				"",};
+				"repeat",
+				"repeatUntil、repeatWhen",};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 	}
 	
@@ -95,7 +96,24 @@ public class CreateOperatorActivity extends ListActivity {
 				Observable.rangeLong(20, 2).subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete2"));
 				break;
 			case 9:
-				
+				Observable.just("无限个")
+						.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之前则每次发送均会延迟1秒
+						.repeat()
+						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete1"));
+				Observable.just("指定个数")
+						.repeat(5)
+						.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之后则只在第一次发送会延迟1秒
+						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete2"));
+				break;
+			case 10:
+				long startTime = System.currentTimeMillis();
+				Observable.just("repeatUntil")
+						.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之前则每次发送均会延迟1秒
+						.repeatUntil(() -> System.currentTimeMillis() - startTime > 1000 * 3) //3秒后结束
+						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete1"));
+				Observable.just("repeatWhen")
+						.repeatWhen(s -> s.delay(1000, TimeUnit.MILLISECONDS))
+						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete2"));
 				break;
 		}
 	}

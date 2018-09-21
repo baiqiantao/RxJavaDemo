@@ -13,8 +13,10 @@ import com.bqt.test.rx.observer.Person;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -34,14 +36,18 @@ public class TransformOperatorActivity extends ListActivity {
 				"4、flatMap 实现多个网络请求依次依赖简化代码",
 				"5、flatMapIterable 案例1",
 				"6、flatMapIterable 案例2",
-				"7、buffer",
-				"8、",
+				"7、buffer(int count)",
+				"8、buffer(count, skip)",
+				"9、buffer(timespan, unit, count)",
 		};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 	}
 	
+	private int i;
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+		i++;
 		switch (position) {
 			case 0:
 				Observable.just(new Date()) // Date 类型
@@ -104,13 +110,53 @@ public class TransformOperatorActivity extends ListActivity {
 						.flatMap(Observable::fromIterable) //返回一个 Observable
 						.flatMapIterable(string -> Arrays.asList(string.toCharArray())) //返回一个 Iterable 而不是另一个 Observable
 						.subscribe(array -> log(Arrays.toString(array)));
+				Observable.just(new Person(Arrays.asList("你妹", "泥煤")), new Person(Arrays.asList("你美", "你没")))
+						.map(person -> person.loves)
+						.flatMapIterable(list -> {
+									List<char[]> charList = new ArrayList<>();
+									for (String string : list) {
+										charList.add(string.toCharArray());
+									}
+									return charList; //返回一个 Iterable 而不是另一个 Observable
+								}
+						).subscribe(array -> log(Arrays.toString(array)));
 				break;
 			case 7:
-				Observable.just(1, 2, 3, 4, 5) //定期从被观察者发送的事件中获取一定数量的事件并放到缓存区中，然后把这些数据集合打包发射
-						.buffer(3, 1) // 设置缓存区大小(每次从被观察者中获取的事件最大数量) ，步长(每次获取新事件的数量)
-						.subscribe(list -> log("缓存区中事件：" + list.toString()), t -> log(""), () -> log("onComplete"));
+				if (i % 2 == 0) {
+					Observable.range(1, 5).buffer(2)  //缓存区大小，步长==缓存区大小，等价于buffer(count, count)
+							.subscribe(list -> log(list.toString()), t -> log(""), () -> log("完成")); //[1, 2]，[3, 4]，[5]，完成
+				} else {
+					Observable.range(1, 10).buffer(10)  //将所有元素组装到集合中的效果
+							.subscribe(list -> log(list.toString())); //[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+				}
 				break;
 			case 8:
+				if (i % 3 == 0) {
+					Observable.range(1, 5).buffer(3, 1) // 缓存区大小，步长；队列效果(先进先出)
+							.subscribe(list -> log(list.toString()));//[1, 2, 3]，[2, 3, 4]，[3, 4, 5]，[4, 5]，[5]
+				} else if (i % 3 == 1) {
+					Observable.range(1, 5).buffer(5, 1) //每次剔除一个效果
+							.subscribe(list -> log(list.toString()));//[1, 2, 3, 4, 5]，[2, 3, 4, 5]，[3, 4, 5]，[4, 5]，[5]
+				} else {
+					Observable.range(1, 5).buffer(1, 2) //只取奇数个效果
+							.subscribe(list -> log(list.toString()));//[1]，[3]，[5]
+				}
+				break;
+			case 9:
+				Observable<Integer> observable = Observable.create(emitter -> {
+					for (int i = 0; i < 8; i++) {
+						SystemClock.sleep(100);//模拟耗时操作
+						emitter.onNext(i);
+					}
+					emitter.onComplete();
+				});
+				if (i % 3 == 0) { //周期性订阅多个结果：
+					observable.buffer(250, TimeUnit.MILLISECONDS) //等价于 count = Integer.MAX_VALUE
+							.subscribe(list -> log("缓存区中事件：" + list.toString())); //[0, 1]，[2, 3]，[4, 5, 6]，[7]
+				} else { //当达到指定时间【或】缓冲区中达到指定数量时发射
+					observable.buffer(250, TimeUnit.MILLISECONDS, 2) //可以指定工作所在的线程
+							.subscribe(list -> log("缓存区中事件：" + list.toString())); //[0, 1]，[]，[2, 3]，[]，[4, 5]，[6]，[7]
+				}
 				break;
 		}
 	}
