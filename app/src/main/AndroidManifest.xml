@@ -41,7 +41,6 @@
         <activity android:name=".plugins.RxPermissionsActivity"/>
         <activity android:name=".plugins.RxPermissionsFragmentActivity"/>
         <activity android:name=".plugins.RxBindingActivity"/>
-        <activity android:name=".operator.TransformOperator2Activity"/>
     </application>
 
 </manifest>
