@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.bqt.test.rx.observer.ObserverPatternActivity;
 import com.bqt.test.rx.operator.CreateOperatorActivity;
+import com.bqt.test.rx.operator.FilterOperatorActivity;
 import com.bqt.test.rx.operator.Operator1Activity;
 import com.bqt.test.rx.operator.TransformOperatorActivity;
 import com.bqt.test.rx.plugins.LubanActivity;
@@ -25,7 +26,7 @@ public class MainActivity extends ListActivity {
 		String[] array = {"0、传统的观察者模式和使用 rx 写的观察者模式对比",
 				"1、创建操作符 create just from defer timer interval repeat",
 				"2、变换操作符 map flatMap concatMap buffer",
-				"3、变换操作符 scan groupBy window cast",
+				"3、过滤操作符 filter distinct throttle debounce timeout",
 				"4、",
 				"5、 ",
 				"6、 ",
@@ -45,14 +46,14 @@ public class MainActivity extends ListActivity {
 			case 0:
 				startActivity(new Intent(this, ObserverPatternActivity.class));
 				break;
-			case 1:
+			case 1: //创建操作符
 				startActivity(new Intent(this, CreateOperatorActivity.class));
 				break;
-			case 2:
+			case 2: //变换操作符
 				startActivity(new Intent(this, TransformOperatorActivity.class));
 				break;
-			case 3:
-				startActivity(new Intent(this, Operator1Activity.class));
+			case 3: //过滤操作符
+				startActivity(new Intent(this, FilterOperatorActivity.class));
 				break;
 			case 4:
 				startActivity(new Intent(this, Operator1Activity.class));

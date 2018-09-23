@@ -182,18 +182,13 @@ public class TransformOperatorActivity extends ListActivity {
 				}
 				break;
 			case 9: //buffer(timespan, unit, count)
-				Observable<Integer> observable = Observable.create(emitter -> {
-					for (int i = 0; i < 8; i++) {
-						SystemClock.sleep(100);//模拟耗时操作
-						emitter.onNext(i);
-					}
-					emitter.onComplete();
-				});
-				if (i % 3 == 0) { //周期性订阅多个结果：
-					observable.buffer(250, TimeUnit.MILLISECONDS) //等价于 count = Integer.MAX_VALUE
+				if (i % 2 == 0) { //周期性订阅多个结果：
+					Observable.intervalRange(0, 8, 100, 100, TimeUnit.MILLISECONDS) //从0开始发射8个
+							.buffer(250, TimeUnit.MILLISECONDS) //等价于 count = Integer.MAX_VALUE
 							.subscribe(list -> log("缓存区中事件：" + list.toString())); //[0, 1]，[2, 3]，[4, 5, 6]，[7]
 				} else { //当达到指定时间【或】缓冲区中达到指定数量时发射
-					observable.buffer(250, TimeUnit.MILLISECONDS, 2) //可以指定工作所在的线程
+					Observable.intervalRange(0, 8, 100, 100, TimeUnit.MILLISECONDS) //从0开始发射8个
+							.buffer(250, TimeUnit.MILLISECONDS, 2) //可以指定工作所在的线程
 							.subscribe(list -> log("缓存区中事件：" + list.toString())); //[0, 1]，[]，[2, 3]，[]，[4, 5]，[6]，[7]
 				}
 				break;
