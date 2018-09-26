@@ -40,8 +40,9 @@ public class FilterOperatorActivity extends ListActivity {
 				"8、take、takeLast",
 				"9、takeUntil、takeWhile",
 				"10、skip、skipLast、skipUntil、skipWhile",
-				"11、first、last",
-				"12、firstElement、lastElement、elementAt、firstOrError、lastOrError、elementAtOrError",
+				"11、first*、last*",
+				"12、elementAt、elementAtOrError",
+				"13、singleElement、single、singleOrError",
 				"",};
 		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
 		getListView().addFooterView(et);
@@ -155,7 +156,7 @@ public class FilterOperatorActivity extends ListActivity {
 						.subscribe(i -> log("" + i), e -> log("异常3"), () -> log("完成3")); //20, 21, 22, 完成
 				break;
 			case 10: //skip skipLast skipUntil skipWhile
-				if (i % 2 == 1) {
+				if (i % 2 == 0) {
 					Observable.range(0, 5).skip(2).subscribe(i -> log("" + i)); //2.3.4
 					Observable.range(10, 5).skipLast(2).subscribe(i -> log("" + i)); //10,11,12
 					Observable.intervalRange(20, 5, 200, 200, TimeUnit.MILLISECONDS)
@@ -175,11 +176,49 @@ public class FilterOperatorActivity extends ListActivity {
 				break;
 			case 11:
 				Observable.range(0, 5)
-						.subscribe(i -> log("" + i)); //42,43,44
+						.doOnEach(notification -> log("first1发射的事件为：" + notification.getValue())) //只有一个 0
+						.first(100) //此时的结果和使用 firstOrError、firstElement 的效果完全一样
+						.subscribe(i -> log("first1:" + i), e -> log("first1异常"));  //0
+				Observable.empty().delay(100, TimeUnit.MILLISECONDS)
+						.doOnEach(notification -> log("first2发射的事件为：" + notification.getValue())) //null
+						.first(100)  //此时的结果和使用 firstOrError、firstElement 的效果仅仅是结果不一样
+						.subscribe(o -> log("first2:" + o), e -> log("first2异常")); //100、NoSuchElementException、onComplete
+				Observable.range(10, 5).delay(200, TimeUnit.MILLISECONDS)
+						.doOnEach(notification -> log("last发射的事件为：" + notification.getValue())) //有六个：10,11,12,13,14,null
+						.last(100)
+						.subscribe(i -> log("last:" + i), e -> log("last异常"));  //14
 				break;
 			case 12:
+				Observable.range(0, 5)
+						.doOnEach(notification -> log("1发射的事件为：" + notification.getValue())) //0,1
+						.elementAt(1)
+						.subscribe(i -> log("1:" + i), e -> log("1异常"), () -> log("完成"));  //1
+				Observable.range(10, 5)
+						.doOnEach(notification -> log("2发射的事件为：" + notification.getValue())) //10,11,12,13,14,null
+						.elementAt(6)
+						.subscribe(i -> log("2:" + i), e -> log("2异常"), () -> log("完成"));  //0,完成
+				Observable.range(20, 5)
+						.doOnEach(notification -> log("3发射的事件为：" + notification.getValue())) //20,21,22,23,24,null
+						.elementAt(6, 100)
+						.subscribe(i -> log("3:" + i), e -> log("3异常"));  //100
+				Observable.empty()
+						.doOnEach(notification -> log("4发射的事件为：" + notification.getValue())) //null
+						.elementAtOrError(6)
+						.subscribe(i -> log("4:" + i), e -> log("4异常"));  //4异常
 				break;
-			case 13:
+			case 13: //singleElement、single、singleOrError
+				Observable.range(0, 5)
+						.doOnEach(notification -> log("发射的事件为：" + notification.getValue())) //0,1
+						.singleElement()  //此时的结果和使用 single、singleOrError 的效果完全一样
+						.subscribe(i -> log("" + i), e -> log("异常"), () -> log("完成"));  //IllegalArgumentException
+				Observable.empty().delay(100, TimeUnit.MILLISECONDS)
+						.doOnEach(notification -> log("发射的事件为：" + notification.getValue())) //null
+						.single(100)  //此时的结果和使用 singleElement、singleOrError 的效果仅仅是结果不一样
+						.subscribe(i -> log("" + i), e -> log("异常"));  //100、完成、NoSuchElementException
+				Observable.just(20).delay(200, TimeUnit.MILLISECONDS)
+						.doOnEach(notification -> log("发射的事件为：" + notification.getValue())) //20,null
+						.singleOrError()  //此时的结果和使用 single、singleElement 的效果完全一样
+						.subscribe(i -> log("" + i), e -> log("异常"));  //20
 				break;
 		}
 	}
