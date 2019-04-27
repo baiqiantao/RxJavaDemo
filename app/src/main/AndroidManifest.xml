@@ -36,7 +36,7 @@
         <activity android:name=".observer.ObserverPatternActivity"/>
         <activity android:name=".operator.TransformOperatorActivity"/>
         <activity android:name=".operator.CreateOperatorActivity"/>
-        <activity android:name=".operator.Operator1Activity"/>
+        <activity android:name=".operator.CombineOperatorActivity"/>
         <activity android:name=".plugins.LubanActivity"/>
         <activity android:name=".plugins.RxPermissionsActivity"/>
         <activity android:name=".plugins.RxPermissionsFragmentActivity"/>

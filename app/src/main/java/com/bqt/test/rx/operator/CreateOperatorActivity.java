@@ -25,17 +25,17 @@ public class CreateOperatorActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		String[] array = {"create",
-				"just",
-				"fromIterable",
-				"fromArray",
-				"empty、error、never",
-				"defer",
-				"timer",
-				"interval、intervalRange",
-				"range、rangeLong",
-				"repeat",
-				"repeatUntil、repeatWhen",};
-		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Arrays.asList(array)));
+			"just",
+			"fromIterable",
+			"fromArray",
+			"empty、error、never",
+			"defer",
+			"timer",
+			"interval、intervalRange",
+			"range、rangeLong",
+			"repeat",
+			"repeatUntil、repeatWhen",};
+		setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, array));
 	}
 	
 	@Override
@@ -64,11 +64,11 @@ public class CreateOperatorActivity extends ListActivity {
 				break;
 			case 4:
 				Observable.empty().subscribe(o -> log("onNext"),
-						t -> log("onError"), () -> log("onComplete"), d -> log("onSubscribe"));//onSubscribe onComplete
+					t -> log("onError"), () -> log("onComplete"), d -> log("onSubscribe"));//onSubscribe onComplete
 				Observable.error(new Throwable("")).subscribe(o -> log("onNext"),
-						t -> log("onError"), () -> log("onComplete"), d -> log("onSubscribe"));//onSubscribe onError
+					t -> log("onError"), () -> log("onComplete"), d -> log("onSubscribe"));//onSubscribe onError
 				Observable.never().subscribe(o -> log("onNext"),
-						t -> log("onError"), () -> log("onComplete"), d -> log("onSubscribe"));//onSubscribe
+					t -> log("onError"), () -> log("onComplete"), d -> log("onSubscribe"));//onSubscribe
 				break;
 			case 5:
 				Observable<String> observable = Observable.defer(() -> Observable.just(format.format(new Date())));//订阅前不创建
@@ -78,18 +78,18 @@ public class CreateOperatorActivity extends ListActivity {
 				break;
 			case 6:
 				Observable.timer(1000, TimeUnit.MILLISECONDS) //延迟指定时间后，发送1个值为0的Long类型对象，默认在子线程上
-						.doOnSubscribe(s -> log2("doOnSubscribe1")) //doOnSubscribe1，21:33:02 109，true
-						.subscribe(l -> log2("onNext1：" + l)); //onNext1：0，21:33:03 112，false
+					.doOnSubscribe(s -> log2("doOnSubscribe1")) //doOnSubscribe1，21:33:02 109，true
+					.subscribe(l -> log2("onNext1：" + l)); //onNext1：0，21:33:03 112，false
 				Observable.timer(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()) //指定订阅者接收事件所在线程
-						.doOnSubscribe(s -> log2("doOnSubscribe2")) //doOnSubscribe2，21:33:02 111，true
-						.subscribe(l -> log2("onNext2：" + l)); //onNext2：0，21:33:03 113，true
+					.doOnSubscribe(s -> log2("doOnSubscribe2")) //doOnSubscribe2，21:33:02 111，true
+					.subscribe(l -> log2("onNext2：" + l)); //onNext2：0，21:33:03 113，true
 				break;
 			case 7:
 				log2("开始时间"); //每次递增1，默认在子线程上，可指定线程调度器
 				Observable.interval(5000, 1000, TimeUnit.MILLISECONDS)//首次延迟时间、间隔时间，
-						.subscribe(l -> log2("接收的对象2：" + l)); //不会自动结束的
+					.subscribe(l -> log2("接收的对象2：" + l)); //不会自动结束的
 				Observable.intervalRange(100, 3, 0, 1, TimeUnit.SECONDS) //起始值，发送总数量
-						.subscribe(l -> log2("接收的对象1：" + l), t -> log2("onError"), () -> log2("接收的对象1：onComplete"));
+					.subscribe(l -> log2("接收的对象1：" + l), t -> log2("onError"), () -> log2("接收的对象1：onComplete"));
 				break;
 			case 8:
 				Observable.range(10, 3).subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete1"));
@@ -97,23 +97,23 @@ public class CreateOperatorActivity extends ListActivity {
 				break;
 			case 9:
 				Observable.just("无限个")
-						.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之前则每次发送均会延迟1秒
-						.repeat()
-						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete1"));
+					.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之前则每次发送均会延迟1秒
+					.repeat()
+					.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete1"));
 				Observable.just("指定个数")
-						.repeat(5)
-						.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之后则只在第一次发送会延迟1秒
-						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete2"));
+					.repeat(5)
+					.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之后则只在第一次发送会延迟1秒
+					.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete2"));
 				break;
 			case 10:
 				long startTime = System.currentTimeMillis();
 				Observable.just("repeatUntil")
-						.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之前则每次发送均会延迟1秒
-						.repeatUntil(() -> System.currentTimeMillis() - startTime > 1000 * 3) //3秒后结束
-						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete1"));
+					.delay(1000, TimeUnit.MILLISECONDS) //放在repeat之前则每次发送均会延迟1秒
+					.repeatUntil(() -> System.currentTimeMillis() - startTime > 1000 * 3) //3秒后结束
+					.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete1"));
 				Observable.just("repeatWhen")
-						.repeatWhen(s -> s.delay(1000, TimeUnit.MILLISECONDS))
-						.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete2"));
+					.repeatWhen(s -> s.delay(1000, TimeUnit.MILLISECONDS))
+					.subscribe(i -> log2("" + i), t -> log2(""), () -> log2("onComplete2"));
 				break;
 		}
 	}

@@ -10,7 +10,7 @@ import android.widget.ListView;
 import com.bqt.test.rx.observer.ObserverPatternActivity;
 import com.bqt.test.rx.operator.CreateOperatorActivity;
 import com.bqt.test.rx.operator.FilterOperatorActivity;
-import com.bqt.test.rx.operator.Operator1Activity;
+import com.bqt.test.rx.operator.CombineOperatorActivity;
 import com.bqt.test.rx.operator.TransformOperatorActivity;
 import com.bqt.test.rx.plugins.LubanActivity;
 import com.bqt.test.rx.plugins.RxBindingActivity;
@@ -27,7 +27,7 @@ public class MainActivity extends ListActivity {
 				"1、创建操作符 create just from defer timer interval repeat",
 				"2、变换操作符 map flatMap concatMap buffer",
 				"3、过滤操作符 filter distinct throttle debounce timeout",
-				"4、",
+				"4、组合操作符 ",
 				"5、 ",
 				"6、 ",
 				"7、",
@@ -56,7 +56,7 @@ public class MainActivity extends ListActivity {
 				startActivity(new Intent(this, FilterOperatorActivity.class));
 				break;
 			case 4:
-				startActivity(new Intent(this, Operator1Activity.class));
+				startActivity(new Intent(this, CombineOperatorActivity.class));
 				break;
 			case 5:
 				
